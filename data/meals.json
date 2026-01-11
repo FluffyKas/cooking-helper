@@ -1,0 +1,146 @@
+[
+  {
+    "id": "1",
+    "name": "Spaghetti Carbonara",
+    "ingredients": [
+      "400g spaghetti",
+      "200g pancetta or guanciale",
+      "4 large eggs",
+      "100g Pecorino Romano cheese",
+      "Black pepper",
+      "Salt"
+    ],
+    "instructions": "1. Cook pasta in salted boiling water until al dente.\n2. While pasta cooks, fry pancetta until crispy.\n3. Beat eggs with grated cheese and black pepper.\n4. Drain pasta (reserve some pasta water).\n5. Remove pan from heat, add pasta to pancetta.\n6. Quickly mix in egg mixture, adding pasta water to create creamy sauce.\n7. Serve immediately with extra cheese and pepper.",
+    "image": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800",
+    "complexity": "medium",
+    "cuisine": "Italian",
+    "labels": ["dinner", "pasta"],
+    "prepTime": 25,
+    "servings": 4
+  },
+  {
+    "id": "2",
+    "name": "Chickpea Curry",
+    "ingredients": [
+      "2 cans chickpeas",
+      "1 can coconut milk",
+      "1 onion, diced",
+      "3 cloves garlic",
+      "2 tbsp curry powder",
+      "1 can diced tomatoes",
+      "Spinach",
+      "Rice for serving"
+    ],
+    "instructions": "1. Sauté onion and garlic until soft.\n2. Add curry powder and cook for 1 minute.\n3. Add tomatoes and coconut milk, simmer 10 minutes.\n4. Add chickpeas and cook 15 minutes.\n5. Stir in spinach until wilted.\n6. Serve over rice.",
+    "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800",
+    "complexity": "easy",
+    "cuisine": "Indian",
+    "labels": ["veggie", "dinner", "batch-cooking"],
+    "prepTime": 35,
+    "servings": 6
+  },
+  {
+    "id": "3",
+    "name": "Greek Salad",
+    "ingredients": [
+      "4 tomatoes, chopped",
+      "1 cucumber, sliced",
+      "1 red onion, sliced",
+      "200g feta cheese",
+      "Kalamata olives",
+      "Olive oil",
+      "Red wine vinegar",
+      "Oregano"
+    ],
+    "instructions": "1. Chop all vegetables into bite-sized pieces.\n2. Combine in a large bowl.\n3. Add olives and crumbled feta.\n4. Dress with olive oil, vinegar, and oregano.\n5. Toss gently and serve.",
+    "image": "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800",
+    "complexity": "easy",
+    "cuisine": "Greek",
+    "labels": ["veggie", "lunch", "salad"],
+    "prepTime": 15,
+    "servings": 4
+  },
+  {
+    "id": "4",
+    "name": "Beef Bourguignon",
+    "ingredients": [
+      "1kg beef chuck, cubed",
+      "200g bacon",
+      "2 carrots, sliced",
+      "1 onion, diced",
+      "250g mushrooms",
+      "750ml red wine",
+      "2 cups beef stock",
+      "Thyme, bay leaves",
+      "Flour for dusting"
+    ],
+    "instructions": "1. Brown beef in batches, set aside.\n2. Cook bacon, then vegetables.\n3. Return beef to pot, dust with flour.\n4. Add wine and stock, bring to simmer.\n5. Cover and cook in 325°F oven for 2.5 hours.\n6. Add mushrooms in last 30 minutes.\n7. Serve with crusty bread or mashed potatoes.",
+    "image": "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800",
+    "complexity": "hard",
+    "cuisine": "French",
+    "labels": ["dinner", "fancy", "batch-cooking"],
+    "prepTime": 180,
+    "servings": 6
+  },
+  {
+    "id": "5",
+    "name": "Avocado Toast",
+    "ingredients": [
+      "2 slices sourdough bread",
+      "1 ripe avocado",
+      "Lemon juice",
+      "Salt and pepper",
+      "Red pepper flakes",
+      "Optional: poached egg"
+    ],
+    "instructions": "1. Toast bread until golden.\n2. Mash avocado with lemon juice, salt, and pepper.\n3. Spread on toast.\n4. Top with red pepper flakes.\n5. Add poached egg if desired.",
+    "image": "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=800",
+    "complexity": "easy",
+    "cuisine": "American",
+    "labels": ["veggie", "breakfast", "lunch"],
+    "prepTime": 10,
+    "servings": 1
+  },
+  {
+    "id": "6",
+    "name": "Pad Thai",
+    "ingredients": [
+      "200g rice noodles",
+      "200g shrimp or tofu",
+      "2 eggs",
+      "3 tbsp tamarind paste",
+      "2 tbsp fish sauce",
+      "1 tbsp sugar",
+      "Bean sprouts",
+      "Peanuts",
+      "Lime wedges",
+      "Green onions"
+    ],
+    "instructions": "1. Soak rice noodles in warm water for 30 minutes.\n2. Mix tamarind, fish sauce, and sugar for sauce.\n3. Stir-fry protein until cooked, set aside.\n4. Scramble eggs in wok, add drained noodles.\n5. Add sauce and protein, toss well.\n6. Serve with bean sprouts, peanuts, and lime.",
+    "image": "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=800",
+    "complexity": "medium",
+    "cuisine": "Thai",
+    "labels": ["dinner"],
+    "prepTime": 45,
+    "servings": 2
+  },
+  {
+    "id": "7",
+    "name": "Vegetable Stir Fry",
+    "ingredients": [
+      "Mixed vegetables (broccoli, bell peppers, carrots, snap peas)",
+      "2 tbsp soy sauce",
+      "1 tbsp sesame oil",
+      "2 cloves garlic, minced",
+      "1 inch ginger, grated",
+      "Rice for serving"
+    ],
+    "instructions": "1. Prep all vegetables into bite-sized pieces.\n2. Heat oil in wok over high heat.\n3. Add garlic and ginger, stir-fry 30 seconds.\n4. Add harder vegetables first (carrots, broccoli).\n5. Add softer vegetables, stir-fry 3-4 minutes.\n6. Add soy sauce and sesame oil.\n7. Serve over rice.",
+    "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800",
+    "complexity": "easy",
+    "cuisine": "Asian",
+    "labels": ["veggie", "dinner", "quick"],
+    "prepTime": 20,
+    "servings": 4
+  }
+]
