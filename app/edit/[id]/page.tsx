@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Meal } from "@/types/meal";
 
-export default function AddMealPage() {
+export default function EditMealPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const [meal, setMeal] = useState<Meal | null>(null);
   const [availableLabels, setAvailableLabels] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -21,6 +23,7 @@ export default function AddMealPage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   // Load available labels
@@ -38,6 +41,40 @@ export default function AddMealPage() {
     loadLabels();
   }, []);
 
+  // Load meal data
+  useEffect(() => {
+    async function loadMeal() {
+      try {
+        const response = await fetch(`/api/meals/${params.id}`);
+        if (!response.ok) {
+          throw new Error("Meal not found");
+        }
+        const mealData: Meal = await response.json();
+        setMeal(mealData);
+
+        // Populate form
+        setFormData({
+          name: mealData.name,
+          ingredients: mealData.ingredients?.join("\n") || "",
+          instructions: mealData.instructions || "",
+          image: mealData.image || "",
+          complexity: mealData.complexity,
+          cuisine: mealData.cuisine,
+          labels: mealData.labels?.join(", ") || "",
+          prepTime: mealData.prepTime?.toString() || "",
+          servings: mealData.servings?.toString() || "",
+          spiciness: mealData.spiciness?.toString() || "0",
+        });
+        setIsLoading(false);
+      } catch (err) {
+        setError("Failed to load meal");
+        setIsLoading(false);
+      }
+    }
+
+    loadMeal();
+  }, [params.id]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -45,7 +82,7 @@ export default function AddMealPage() {
 
     try {
       // Prepare the meal data
-      const newMeal = {
+      const updatedMeal = {
         name: formData.name,
         ingredients: formData.ingredients
           ? formData.ingredients.split("\n").filter((line) => line.trim())
@@ -63,39 +100,62 @@ export default function AddMealPage() {
       };
 
       // Send to API route
-      const response = await fetch("/api/meals", {
-        method: "POST",
+      const response = await fetch(`/api/meals/${params.id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newMeal),
+        body: JSON.stringify(updatedMeal),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to add meal");
+        throw new Error("Failed to update meal");
       }
 
-      // Redirect to home page
-      router.push("/");
-      router.refresh(); // Refresh to show new meal
+      // Redirect to meal detail page
+      router.push(`/meal/${params.id}`);
+      router.refresh();
     } catch (err) {
-      setError("Failed to add meal. Please try again.");
+      setError("Failed to update meal. Please try again.");
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <main className="min-h-screen p-8">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-gray-500">Loading...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (!meal) {
+    return (
+      <main className="min-h-screen p-8">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-red-500">Meal not found</p>
+          <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
+            ← Back to recipes
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
         {/* Back button */}
         <Link
-          href="/"
+          href={`/meal/${params.id}`}
           className="inline-block mb-6 text-blue-600 dark:text-blue-400 hover:underline"
         >
-          ← Back to recipes
+          ← Back to recipe
         </Link>
 
-        <h1 className="text-4xl font-bold mb-8">Add New Meal</h1>
+        <h1 className="text-4xl font-bold mb-8">Edit Meal</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name - Required */}
@@ -177,7 +237,7 @@ export default function AddMealPage() {
               onChange={(e) => setFormData({ ...formData, ingredients: e.target.value })}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
               rows={6}
-              placeholder="Enter each ingredient on a new line&#10;e.g.,&#10;400g spaghetti&#10;200g pancetta&#10;4 eggs"
+              placeholder="Enter each ingredient on a new line"
             />
             <p className="text-xs text-gray-500 mt-1">One ingredient per line</p>
           </div>
@@ -305,7 +365,7 @@ export default function AddMealPage() {
             )}
           </div>
 
-          {/* Prep Time - Optional */}
+          {/* Prep Time & Servings */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -321,7 +381,6 @@ export default function AddMealPage() {
               />
             </div>
 
-            {/* Servings - Optional */}
             <div>
               <label className="block text-sm font-medium mb-2">
                 Servings <span className="text-gray-500 text-xs">(optional)</span>
@@ -351,10 +410,10 @@ export default function AddMealPage() {
               disabled={isSubmitting}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
             >
-              {isSubmitting ? "Adding..." : "Add Recipe"}
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </button>
             <Link
-              href="/"
+              href={`/meal/${params.id}`}
               className="px-6 py-3 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
             >
               Cancel

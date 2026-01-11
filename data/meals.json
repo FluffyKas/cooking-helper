@@ -15,8 +15,8 @@
     "complexity": "medium",
     "cuisine": "Italian",
     "labels": [
-      "dinner",
-      "pasta"
+      "Dinner",
+      "Pasta"
     ],
     "prepTime": 25,
     "servings": 4
@@ -39,9 +39,10 @@
     "complexity": "easy",
     "cuisine": "Indian",
     "labels": [
-      "veggie",
-      "dinner",
-      "batch-cooking"
+      "Veggie",
+      "Dinner",
+      "Batch-cooking",
+      "Healthy"
     ],
     "prepTime": 35,
     "servings": 6,
@@ -65,9 +66,9 @@
     "complexity": "easy",
     "cuisine": "Greek",
     "labels": [
-      "veggie",
-      "lunch",
-      "salad"
+      "Veggie",
+      "Lunch",
+      "Salad"
     ],
     "prepTime": 15,
     "servings": 4
@@ -91,9 +92,9 @@
     "complexity": "hard",
     "cuisine": "French",
     "labels": [
-      "dinner",
-      "fancy",
-      "batch-cooking"
+      "Dinner",
+      "Fancy",
+      "Batch-cooking"
     ],
     "prepTime": 180,
     "servings": 6
@@ -114,9 +115,9 @@
     "complexity": "easy",
     "cuisine": "American",
     "labels": [
-      "veggie",
-      "breakfast",
-      "lunch"
+      "Veggie",
+      "Breakfast",
+      "Lunch"
     ],
     "prepTime": 10,
     "servings": 1
@@ -141,7 +142,7 @@
     "complexity": "medium",
     "cuisine": "Thai",
     "labels": [
-      "dinner"
+      "Dinner"
     ],
     "prepTime": 45,
     "servings": 2,
@@ -163,9 +164,9 @@
     "complexity": "easy",
     "cuisine": "Asian",
     "labels": [
-      "veggie",
-      "dinner",
-      "quick"
+      "Veggie",
+      "Dinner",
+      "Quick"
     ],
     "prepTime": 20,
     "servings": 4
@@ -173,19 +174,11 @@
   {
     "id": "8",
     "name": "Overnight oats",
-    "ingredients": [
-      "oats",
-      "chia seeds",
-      "milk (cow or plant based)",
-      "maple syrup",
-      "greek yoghurt"
-    ],
     "complexity": "easy",
     "cuisine": "Modern",
     "labels": [
-      "veggie",
-      "quick",
-      "sweet"
+      "Breakfast",
+      "Quick"
     ],
     "prepTime": 5,
     "servings": 1
