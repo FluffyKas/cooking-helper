@@ -170,17 +170,5 @@
     ],
     "prepTime": 20,
     "servings": 4
-  },
-  {
-    "id": "8",
-    "name": "Overnight oats",
-    "complexity": "easy",
-    "cuisine": "Modern",
-    "labels": [
-      "Breakfast",
-      "Quick"
-    ],
-    "prepTime": 5,
-    "servings": 1
   }
 ]

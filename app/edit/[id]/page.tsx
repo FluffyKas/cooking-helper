@@ -5,7 +5,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Meal } from "@/types/meal";
 
-export default function EditMealPage({ params }: { params: { id: string } }) {
+export default async function EditMealPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
+  return <EditMealForm id={id} />;
+}
+
+function EditMealForm({ id }: { id: string }) {
   const router = useRouter();
   const [meal, setMeal] = useState<Meal | null>(null);
   const [availableLabels, setAvailableLabels] = useState<string[]>([]);
@@ -45,7 +51,7 @@ export default function EditMealPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function loadMeal() {
       try {
-        const response = await fetch(`/api/meals/${params.id}`);
+        const response = await fetch(`/api/meals/${id}`);
         if (!response.ok) {
           throw new Error("Meal not found");
         }
@@ -73,7 +79,7 @@ export default function EditMealPage({ params }: { params: { id: string } }) {
     }
 
     loadMeal();
-  }, [params.id]);
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,7 +106,7 @@ export default function EditMealPage({ params }: { params: { id: string } }) {
       };
 
       // Send to API route
-      const response = await fetch(`/api/meals/${params.id}`, {
+      const response = await fetch(`/api/meals/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -113,7 +119,7 @@ export default function EditMealPage({ params }: { params: { id: string } }) {
       }
 
       // Redirect to meal detail page
-      router.push(`/meal/${params.id}`);
+      router.push(`/meal/${id}`);
       router.refresh();
     } catch (err) {
       setError("Failed to update meal. Please try again.");
@@ -149,7 +155,7 @@ export default function EditMealPage({ params }: { params: { id: string } }) {
       <div className="max-w-4xl mx-auto">
         {/* Back button */}
         <Link
-          href={`/meal/${params.id}`}
+          href={`/meal/${id}`}
           className="inline-block mb-6 text-blue-600 dark:text-blue-400 hover:underline"
         >
           ← Back to recipe
@@ -413,7 +419,7 @@ export default function EditMealPage({ params }: { params: { id: string } }) {
               {isSubmitting ? "Saving..." : "Save Changes"}
             </button>
             <Link
-              href={`/meal/${params.id}`}
+              href={`/meal/${id}`}
               className="px-6 py-3 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
             >
               Cancel

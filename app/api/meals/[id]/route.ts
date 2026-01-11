@@ -6,14 +6,15 @@ import { formatLabel } from "@/lib/labels";
 // GET single meal
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const filePath = path.join(process.cwd(), "data", "meals.json");
     const fileContents = fs.readFileSync(filePath, "utf8");
     const meals = JSON.parse(fileContents);
 
-    const meal = meals.find((m: any) => m.id === params.id);
+    const meal = meals.find((m: any) => m.id === id);
 
     if (!meal) {
       return NextResponse.json({ error: "Meal not found" }, { status: 404 });
@@ -32,9 +33,10 @@ export async function GET(
 // PUT (update) meal
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const updatedData = await request.json();
 
     // Read existing meals
@@ -43,7 +45,7 @@ export async function PUT(
     const meals = JSON.parse(fileContents);
 
     // Find and update the meal
-    const mealIndex = meals.findIndex((m: any) => m.id === params.id);
+    const mealIndex = meals.findIndex((m: any) => m.id === id);
 
     if (mealIndex === -1) {
       return NextResponse.json({ error: "Meal not found" }, { status: 404 });
@@ -58,7 +60,7 @@ export async function PUT(
 
     // Update meal while keeping the ID
     meals[mealIndex] = {
-      id: params.id,
+      id: id,
       ...updatedData,
     };
 

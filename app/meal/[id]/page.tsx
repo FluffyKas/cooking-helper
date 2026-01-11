@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { getMealById } from "@/lib/meals";
 
-export default function MealDetailPage({ params }: { params: { id: string } }) {
-  const meal = getMealById(params.id);
+export default async function MealDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const meal = getMealById(id);
 
   if (!meal) {
     notFound();
