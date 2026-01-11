@@ -14,7 +14,10 @@
     "image": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800",
     "complexity": "medium",
     "cuisine": "Italian",
-    "labels": ["dinner", "pasta"],
+    "labels": [
+      "dinner",
+      "pasta"
+    ],
     "prepTime": 25,
     "servings": 4
   },
@@ -35,7 +38,11 @@
     "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800",
     "complexity": "easy",
     "cuisine": "Indian",
-    "labels": ["veggie", "dinner", "batch-cooking"],
+    "labels": [
+      "veggie",
+      "dinner",
+      "batch-cooking"
+    ],
     "prepTime": 35,
     "servings": 6,
     "spiciness": 2
@@ -57,7 +64,11 @@
     "image": "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800",
     "complexity": "easy",
     "cuisine": "Greek",
-    "labels": ["veggie", "lunch", "salad"],
+    "labels": [
+      "veggie",
+      "lunch",
+      "salad"
+    ],
     "prepTime": 15,
     "servings": 4
   },
@@ -79,7 +90,11 @@
     "image": "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800",
     "complexity": "hard",
     "cuisine": "French",
-    "labels": ["dinner", "fancy", "batch-cooking"],
+    "labels": [
+      "dinner",
+      "fancy",
+      "batch-cooking"
+    ],
     "prepTime": 180,
     "servings": 6
   },
@@ -98,7 +113,11 @@
     "image": "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=800",
     "complexity": "easy",
     "cuisine": "American",
-    "labels": ["veggie", "breakfast", "lunch"],
+    "labels": [
+      "veggie",
+      "breakfast",
+      "lunch"
+    ],
     "prepTime": 10,
     "servings": 1
   },
@@ -121,7 +140,9 @@
     "image": "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=800",
     "complexity": "medium",
     "cuisine": "Thai",
-    "labels": ["dinner"],
+    "labels": [
+      "dinner"
+    ],
     "prepTime": 45,
     "servings": 2,
     "spiciness": 1
@@ -141,8 +162,32 @@
     "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800",
     "complexity": "easy",
     "cuisine": "Asian",
-    "labels": ["veggie", "dinner", "quick"],
+    "labels": [
+      "veggie",
+      "dinner",
+      "quick"
+    ],
     "prepTime": 20,
     "servings": 4
+  },
+  {
+    "id": "8",
+    "name": "Overnight oats",
+    "ingredients": [
+      "oats",
+      "chia seeds",
+      "milk (cow or plant based)",
+      "maple syrup",
+      "greek yoghurt"
+    ],
+    "complexity": "easy",
+    "cuisine": "Modern",
+    "labels": [
+      "veggie",
+      "quick",
+      "sweet"
+    ],
+    "prepTime": 5,
+    "servings": 1
   }
 ]

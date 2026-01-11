@@ -199,14 +199,86 @@ export default function AddMealPage() {
             <label className="block text-sm font-medium mb-2">
               Labels <span className="text-gray-500 text-xs">(optional)</span>
             </label>
-            <input
-              type="text"
-              value={formData.labels}
-              onChange={(e) => setFormData({ ...formData, labels: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-              placeholder="e.g., veggie, dinner, quick"
-            />
-            <p className="text-xs text-gray-500 mt-1">Separate labels with commas</p>
+            
+            {/* Predefined labels as toggle buttons */}
+            <div className="flex flex-wrap gap-2 mb-3">
+              {["veggie", "dinner", "lunch", "breakfast", "batch-cooking", "quick", "fancy", "salad", "pasta", "soup"].map((label) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => {
+                    const currentLabels = formData.labels ? formData.labels.split(",").map(l => l.trim()).filter(Boolean) : [];
+                    if (currentLabels.includes(label)) {
+                      // Remove label
+                      const newLabels = currentLabels.filter(l => l !== label);
+                      setFormData({ ...formData, labels: newLabels.join(", ") });
+                    } else {
+                      // Add label
+                      setFormData({ ...formData, labels: currentLabels.concat(label).join(", ") });
+                    }
+                  }}
+                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                    formData.labels.split(",").map(l => l.trim()).includes(label)
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Custom label input */}
+            <div>
+              <input
+                type="text"
+                placeholder="Add custom label (press Enter to add)"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    const input = e.currentTarget;
+                    const newLabel = input.value.trim();
+                    if (newLabel) {
+                      const currentLabels = formData.labels ? formData.labels.split(",").map(l => l.trim()).filter(Boolean) : [];
+                      if (!currentLabels.includes(newLabel)) {
+                        setFormData({ ...formData, labels: currentLabels.concat(newLabel).join(", ") });
+                      }
+                      input.value = "";
+                    }
+                  }
+                }}
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
+              />
+              <p className="text-xs text-gray-500 mt-1">Type a custom label and press Enter to add it</p>
+            </div>
+
+            {/* Show selected labels */}
+            {formData.labels && (
+              <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Selected labels:</p>
+                <div className="flex flex-wrap gap-2">
+                  {formData.labels.split(",").map(l => l.trim()).filter(Boolean).map((label) => (
+                    <span
+                      key={label}
+                      className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs flex items-center gap-1"
+                    >
+                      {label}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const currentLabels = formData.labels.split(",").map(l => l.trim()).filter(Boolean);
+                          const newLabels = currentLabels.filter(l => l !== label);
+                          setFormData({ ...formData, labels: newLabels.join(", ") });
+                        }}
+                        className="hover:text-red-600"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Prep Time - Optional */}
