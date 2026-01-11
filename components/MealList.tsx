@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import MealCard from "./MealCard";
 import { Meal, Complexity } from "@/types/meal";
 
@@ -9,6 +10,7 @@ interface MealListProps {
 }
 
 export default function MealList({ meals }: MealListProps) {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedComplexity, setSelectedComplexity] = useState<Complexity | "all">("all");
   const [selectedCuisine, setSelectedCuisine] = useState<string>("all");
@@ -63,6 +65,15 @@ export default function MealList({ meals }: MealListProps) {
     setSelectedComplexity("all");
     setSelectedCuisine("all");
     setSelectedLabels([]);
+  };
+
+  // Pick random recipe from filtered results
+  const pickRandomRecipe = () => {
+    if (filteredMeals.length === 0) return;
+    
+    const randomIndex = Math.floor(Math.random() * filteredMeals.length);
+    const randomMeal = filteredMeals[randomIndex];
+    router.push(`/meal/${randomMeal.id}`);
   };
 
   const hasActiveFilters = searchQuery || selectedComplexity !== "all" || 
@@ -150,12 +161,23 @@ export default function MealList({ meals }: MealListProps) {
         </div>
       </div>
 
-      {/* Results count */}
-      <p className="text-gray-600 dark:text-gray-400 mb-6">
-        {filteredMeals.length === meals.length
-          ? `Showing all ${meals.length} recipes`
-          : `Found ${filteredMeals.length} of ${meals.length} recipes`}
-      </p>
+      {/* Results count and random picker */}
+      <div className="flex items-center justify-between mb-6">
+        <p className="text-gray-600 dark:text-gray-400">
+          {filteredMeals.length === meals.length
+            ? `Showing all ${meals.length} recipes`
+            : `Found ${filteredMeals.length} of ${meals.length} recipes`}
+        </p>
+        
+        <button
+          onClick={pickRandomRecipe}
+          disabled={filteredMeals.length === 0}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+        >
+          <span>🎲</span>
+          <span>Random Recipe</span>
+        </button>
+      </div>
 
       {/* Meals grid */}
       {filteredMeals.length > 0 ? (
