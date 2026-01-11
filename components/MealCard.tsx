@@ -8,7 +8,7 @@ interface MealCardProps {
 
 export default function MealCard({ meal }: MealCardProps) {
   return (
-    <Link href={`/meals/${meal.id}`}>
+    <Link href={`/meal/${meal.id}`}>
       <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer bg-white dark:bg-gray-800">
         {/* Image */}
         <div className="relative h-48 bg-gray-200 dark:bg-gray-700">
