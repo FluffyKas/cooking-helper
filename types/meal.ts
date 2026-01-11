@@ -11,4 +11,5 @@ export interface Meal {
   labels?: string[];
   prepTime?: number; // in minutes
   servings?: number;
+  spiciness?: number; // 0-3, where 0 = not spicy, 3 = very spicy
 }

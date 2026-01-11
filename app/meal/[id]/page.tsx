@@ -10,6 +10,12 @@ export default function MealDetailPage({ params }: { params: { id: string } }) {
     notFound();
   }
 
+  // Generate chili icons based on spiciness level
+  const getSpicyIcons = (level?: number) => {
+    if (!level || level === 0) return null;
+    return "🌶️".repeat(level);
+  };
+
   return (
     <main className="min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
@@ -22,7 +28,14 @@ export default function MealDetailPage({ params }: { params: { id: string } }) {
         </Link>
 
         {/* Header */}
-        <h1 className="text-4xl font-bold mb-4">{meal.name}</h1>
+        <div className="flex items-start justify-between mb-4">
+          <h1 className="text-4xl font-bold">{meal.name}</h1>
+          {meal.spiciness && meal.spiciness > 0 && (
+            <span className="text-3xl ml-4">
+              {getSpicyIcons(meal.spiciness)}
+            </span>
+          )}
+        </div>
 
         {/* Meta info */}
         <div className="flex flex-wrap gap-4 text-gray-600 dark:text-gray-400 mb-6">
@@ -46,6 +59,12 @@ export default function MealDetailPage({ params }: { params: { id: string } }) {
             <div className="flex items-center gap-2">
               <span className="font-semibold">Servings:</span>
               <span>{meal.servings}</span>
+            </div>
+          )}
+          {meal.spiciness && meal.spiciness > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="font-semibold">Spiciness:</span>
+              <span className="text-lg">{getSpicyIcons(meal.spiciness)}</span>
             </div>
           )}
         </div>

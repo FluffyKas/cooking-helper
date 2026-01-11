@@ -16,6 +16,7 @@ export default function AddMealPage() {
     labels: "",
     prepTime: "",
     servings: "",
+    spiciness: "0",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,6 +43,7 @@ export default function AddMealPage() {
           : undefined,
         prepTime: formData.prepTime ? parseInt(formData.prepTime) : undefined,
         servings: formData.servings ? parseInt(formData.servings) : undefined,
+        spiciness: formData.spiciness !== "0" ? parseInt(formData.spiciness) : undefined,
       };
 
       // Send to API route
@@ -130,6 +132,23 @@ export default function AddMealPage() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
               placeholder="e.g., Italian, Chinese, Mexican"
             />
+          </div>
+
+          {/* Spiciness - Optional */}
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Spiciness Level <span className="text-gray-500 text-xs">(optional)</span>
+            </label>
+            <select
+              value={formData.spiciness}
+              onChange={(e) => setFormData({ ...formData, spiciness: e.target.value })}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
+            >
+              <option value="0">Not spicy at all</option>
+              <option value="1">🌶️ Mild</option>
+              <option value="2">🌶️🌶️ Medium</option>
+              <option value="3">🌶️🌶️🌶️ Hot</option>
+            </select>
           </div>
 
           {/* Ingredients - Optional */}

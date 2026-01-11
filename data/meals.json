@@ -37,7 +37,8 @@
     "cuisine": "Indian",
     "labels": ["veggie", "dinner", "batch-cooking"],
     "prepTime": 35,
-    "servings": 6
+    "servings": 6,
+    "spiciness": 2
   },
   {
     "id": "3",
@@ -122,7 +123,8 @@
     "cuisine": "Thai",
     "labels": ["dinner"],
     "prepTime": 45,
-    "servings": 2
+    "servings": 2,
+    "spiciness": 1
   },
   {
     "id": "7",

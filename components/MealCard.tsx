@@ -7,6 +7,12 @@ interface MealCardProps {
 }
 
 export default function MealCard({ meal }: MealCardProps) {
+  // Generate chili icons based on spiciness level
+  const getSpicyIcons = (level?: number) => {
+    if (!level || level === 0) return null;
+    return "🌶️".repeat(level);
+  };
+
   return (
     <Link href={`/meal/${meal.id}`}>
       <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer bg-white dark:bg-gray-800">
@@ -28,7 +34,14 @@ export default function MealCard({ meal }: MealCardProps) {
 
         {/* Content */}
         <div className="p-4">
-          <h3 className="font-semibold text-lg mb-2">{meal.name}</h3>
+          <div className="flex items-start justify-between mb-2">
+            <h3 className="font-semibold text-lg">{meal.name}</h3>
+            {meal.spiciness && meal.spiciness > 0 && (
+              <span className="text-lg ml-2 flex-shrink-0">
+                {getSpicyIcons(meal.spiciness)}
+              </span>
+            )}
+          </div>
           
           <div className="flex gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
             <span className="capitalize">{meal.complexity}</span>
