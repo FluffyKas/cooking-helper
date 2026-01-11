@@ -414,15 +414,15 @@ function EditMealForm({ id }: { id: string }) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+              className="px-6 py-3 bg-transparent text-white font-semibold rounded-lg hover:bg-white/10 disabled:bg-transparent disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
             >
-              {isSubmitting ? "Saving..." : "Save Changes"}
+              {isSubmitting ? "SAVING..." : "SAVE CHANGES"}
             </button>
             <Link
               href={`/meal/${id}`}
-              className="px-6 py-3 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
+              className="px-6 py-3 bg-transparent text-gray-400 font-semibold rounded-lg hover:bg-white/10 transition-colors"
             >
-              Cancel
+              CANCEL
             </Link>
           </div>
         </form>

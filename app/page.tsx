@@ -17,9 +17,9 @@ export default function Home() {
             <ThemeToggle />
             <Link 
               href="/add"
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="px-6 py-3 bg-transparent text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
             >
-              + Add New Meal
+              + ADD NEW MEAL
             </Link>
           </div>
         </div>

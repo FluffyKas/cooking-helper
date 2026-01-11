@@ -8,13 +8,23 @@
 }
 
 .dark {
-  --background: #000000;
   --foreground: #ffffff;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark body {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #404040 100%);
+  background-attachment: fixed;
+}
+
+/* Apply Lora to all headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-lora), serif;
+  font-weight: 700;
 }

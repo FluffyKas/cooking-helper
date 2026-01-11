@@ -11,9 +11,9 @@ export default function NotFound() {
         </p>
         <Link 
           href="/"
-          className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="inline-block px-6 py-3 bg-transparent text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
         >
-          Back to Recipes
+          BACK TO RECIPES
         </Link>
       </div>
     </main>

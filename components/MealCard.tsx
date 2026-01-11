@@ -16,7 +16,7 @@ export default function MealCard({ meal }: MealCardProps) {
   return (
     <div className="relative group">
       <Link href={`/meal/${meal.id}`}>
-        <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer bg-white dark:bg-gray-800">
+        <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer bg-white dark:bg-gray-800/90 dark:border-gray-700">
           {/* Image */}
           <div className="relative h-48 bg-gray-200 dark:bg-gray-700">
             {meal.image ? (
@@ -77,7 +77,7 @@ export default function MealCard({ meal }: MealCardProps) {
       <Link
         href={`/edit/${meal.id}`}
         onClick={(e) => e.stopPropagation()}
-        className="absolute top-2 right-2 p-2 bg-white dark:bg-gray-800 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 dark:hover:bg-gray-700"
+        className="absolute top-2 right-2 p-2 bg-white/95 dark:bg-gray-800/95 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 dark:hover:bg-gray-700"
         aria-label="Edit recipe"
       >
         <svg
