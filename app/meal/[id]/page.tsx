@@ -28,14 +28,30 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           ← Back to recipes
         </Link>
 
-        {/* Header */}
+        {/* Header with Edit button */}
         <div className="flex items-start justify-between mb-4">
-          <h1 className="text-4xl font-bold">{meal.name}</h1>
-          {meal.spiciness && meal.spiciness > 0 && (
-            <span className="text-3xl ml-4">
-              {getSpicyIcons(meal.spiciness)}
-            </span>
-          )}
+          <div className="flex items-start gap-4">
+            <h1 className="text-4xl font-bold">{meal.name}</h1>
+            {meal.spiciness && meal.spiciness > 0 && (
+              <span className="text-3xl">
+                {getSpicyIcons(meal.spiciness)}
+              </span>
+            )}
+          </div>
+          <Link
+            href={`/edit/${id}`}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+            </svg>
+            Edit
+          </Link>
         </div>
 
         {/* Meta info */}

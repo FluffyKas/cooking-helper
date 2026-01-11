@@ -14,10 +14,7 @@
     "image": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800",
     "complexity": "medium",
     "cuisine": "Italian",
-    "labels": [
-      "Dinner",
-      "Pasta"
-    ],
+    "labels": ["Dinner", "Pasta"],
     "prepTime": 25,
     "servings": 4
   },
@@ -38,12 +35,7 @@
     "image": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800",
     "complexity": "easy",
     "cuisine": "Indian",
-    "labels": [
-      "Veggie",
-      "Dinner",
-      "Batch-cooking",
-      "Healthy"
-    ],
+    "labels": ["Veggie", "Dinner", "Batch-cooking"],
     "prepTime": 35,
     "servings": 6,
     "spiciness": 2
@@ -65,11 +57,7 @@
     "image": "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=800",
     "complexity": "easy",
     "cuisine": "Greek",
-    "labels": [
-      "Veggie",
-      "Lunch",
-      "Salad"
-    ],
+    "labels": ["Veggie", "Lunch", "Salad"],
     "prepTime": 15,
     "servings": 4
   },
@@ -91,11 +79,7 @@
     "image": "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800",
     "complexity": "hard",
     "cuisine": "French",
-    "labels": [
-      "Dinner",
-      "Fancy",
-      "Batch-cooking"
-    ],
+    "labels": ["Dinner", "Fancy", "Batch-cooking"],
     "prepTime": 180,
     "servings": 6
   },
@@ -114,11 +98,7 @@
     "image": "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=800",
     "complexity": "easy",
     "cuisine": "American",
-    "labels": [
-      "Veggie",
-      "Breakfast",
-      "Lunch"
-    ],
+    "labels": ["Veggie", "Breakfast", "Lunch"],
     "prepTime": 10,
     "servings": 1
   },
@@ -141,9 +121,7 @@
     "image": "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=800",
     "complexity": "medium",
     "cuisine": "Thai",
-    "labels": [
-      "Dinner"
-    ],
+    "labels": ["Dinner"],
     "prepTime": 45,
     "servings": 2,
     "spiciness": 1
@@ -163,11 +141,7 @@
     "image": "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=800",
     "complexity": "easy",
     "cuisine": "Asian",
-    "labels": [
-      "Veggie",
-      "Dinner",
-      "Quick"
-    ],
+    "labels": ["Veggie", "Dinner", "Quick"],
     "prepTime": 20,
     "servings": 4
   }

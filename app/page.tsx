@@ -1,5 +1,6 @@
 import { getAllMeals } from "@/lib/meals";
 import MealList from "@/components/MealList";
+import ThemeToggle from "@/components/ThemeToggle";
 import Link from "next/link";
 
 export default function Home() {
@@ -12,12 +13,15 @@ export default function Home() {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold">Cooking Helper</h1>
           
-          <Link 
-            href="/add"
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-          >
-            + Add New Meal
-          </Link>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Link 
+              href="/add"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              + Add New Meal
+            </Link>
+          </div>
         </div>
 
         {/* Meal list with search and filters */}
