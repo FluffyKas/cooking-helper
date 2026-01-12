@@ -2,21 +2,22 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Meal } from "@/types/meal";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-export default function EditMealPage({ params }: { params: { id: string } }) {
+export default function EditMealPage() {
   return (
     <ProtectedRoute>
-      <EditMealForm params={params} />
+      <EditMealForm />
     </ProtectedRoute>
   );
 }
 
-function EditMealForm({ params }: { params: { id: string } }) {
+function EditMealForm() {
   const router = useRouter();
-  const id = params.id;
+  const params = useParams();
+  const id = params.id as string;
   const [meal, setMeal] = useState<Meal | null>(null);
   const [availableLabels, setAvailableLabels] = useState<string[]>([]);
   const [formData, setFormData] = useState({
