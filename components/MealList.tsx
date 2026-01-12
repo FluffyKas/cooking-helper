@@ -88,12 +88,12 @@ export default function MealList({ meals }: MealListProps) {
           placeholder="Search recipes by name..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-3 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 dark:bg-white/10 backdrop-blur-md dark:border-white/10 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-300"
+          className="w-full px-4 py-3 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white placeholder:text-gray-400"
         />
       </div>
 
       {/* Filters */}
-      <div className="mb-6 p-4 border border-white/20 rounded-lg bg-white/10 dark:bg-white/10 backdrop-blur-md dark:border-white/10">
+      <div className="mb-6 p-4 border border-white/20 rounded-lg bg-white/10 backdrop-blur-md">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-lg">Filters</h3>
           {hasActiveFilters && (
@@ -113,10 +113,7 @@ export default function MealList({ meals }: MealListProps) {
             <select
               value={selectedComplexity}
               onChange={(e) => setSelectedComplexity(e.target.value as Complexity | "all")}
-              className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 dark:bg-white/10 backdrop-blur-md dark:border-white/10 dark:text-white appearance-none cursor-pointer"
-              style={{
-                colorScheme: 'dark',
-              }}
+              className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white appearance-none cursor-pointer"
             >
               <option value="all">All</option>
               <option value="easy">Easy</option>
@@ -131,10 +128,7 @@ export default function MealList({ meals }: MealListProps) {
             <select
               value={selectedCuisine}
               onChange={(e) => setSelectedCuisine(e.target.value)}
-              className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 dark:bg-white/10 backdrop-blur-md dark:border-white/10 dark:text-white appearance-none cursor-pointer"
-              style={{
-                colorScheme: 'dark',
-              }}
+              className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white appearance-none cursor-pointer"
             >
               <option value="all">All</option>
               {cuisines.map((cuisine) => (

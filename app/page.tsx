@@ -1,6 +1,5 @@
 import { getAllMeals } from "@/lib/meals";
 import MealList from "@/components/MealList";
-import ThemeToggle from "@/components/ThemeToggle";
 import LogoutButton from "@/components/LogoutButton";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Link from "next/link";
@@ -17,7 +16,6 @@ export default async function Home() {
             <h1 className="text-4xl font-bold">Cooking Helper</h1>
             
             <div className="flex items-center gap-4">
-              <ThemeToggle />
               <LogoutButton />
               <Link 
                 href="/add"

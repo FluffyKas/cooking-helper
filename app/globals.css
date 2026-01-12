@@ -2,38 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #000000;
-}
-
-.dark {
-  --foreground: #ffffff;
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
+  background-color: #000000;
+  color: #ffffff;
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.dark body {
-  background: url("/assets/app-bg.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
 }
 
 /* Apply Lora to all headings */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-lora), serif;
   font-weight: 700;
+  color: #ffffff;
 }
 
-/* Style dropdown options in dark mode */
-.dark select option {
-  background-color: #2d2d2d;
+/* Style dropdown options */
+select option {
+  background-color: #1a1a1a;
   color: white;
 }
