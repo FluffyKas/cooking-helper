@@ -7,14 +7,6 @@ import { Meal } from "@/types/meal";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function EditMealPage() {
-  return (
-    <ProtectedRoute>
-      <EditMealForm />
-    </ProtectedRoute>
-  );
-}
-
-function EditMealForm() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
@@ -33,6 +25,8 @@ function EditMealForm() {
     spiciness: "0",
   });
 
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  const [customLabel, setCustomLabel] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -54,30 +48,34 @@ function EditMealForm() {
 
   // Load meal data
   useEffect(() => {
+    if (!id) return;
     async function loadMeal() {
       try {
         const response = await fetch(`/api/meals/${id}`);
         if (!response.ok) {
           throw new Error("Meal not found");
         }
-        const mealData: Meal = await response.json();
-        setMeal(mealData);
+        const data = await response.json();
+        setMeal(data);
 
-        // Populate form
+        // Populate form with existing data
         setFormData({
-          name: mealData.name,
-          ingredients: mealData.ingredients?.join("\n") || "",
-          instructions: mealData.instructions || "",
-          image: mealData.image || "",
-          complexity: mealData.complexity,
-          cuisine: mealData.cuisine,
-          labels: mealData.labels?.join(", ") || "",
-          prepTime: mealData.prepTime?.toString() || "",
-          servings: mealData.servings?.toString() || "",
-          spiciness: mealData.spiciness?.toString() || "0",
+          name: data.name || "",
+          ingredients: data.ingredients?.join("\n") || "",
+          instructions: data.instructions || "",
+          image: data.image || "",
+          complexity: data.complexity || "easy",
+          cuisine: data.cuisine || "",
+          labels: "", // Labels are handled separately
+          prepTime: data.prep_time?.toString() || "",
+          servings: data.servings?.toString() || "",
+          spiciness: data.spiciness?.toString() || "0",
         });
+
+        setSelectedLabels(data.labels || []);
         setIsLoading(false);
       } catch (err) {
+        console.error("Error loading meal:", err);
         setError("Failed to load meal");
         setIsLoading(false);
       }
@@ -86,31 +84,68 @@ function EditMealForm() {
     loadMeal();
   }, [id]);
 
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const toggleLabel = (label: string) => {
+    setSelectedLabels((prev) =>
+      prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
+    );
+  };
+
+  const addCustomLabel = () => {
+    const trimmed = customLabel.trim();
+    if (trimmed && !selectedLabels.includes(trimmed)) {
+      // Format the label: capitalize first letter, lowercase rest
+      const formatted =
+        trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+      setSelectedLabels((prev) => [...prev, formatted]);
+      setCustomLabel("");
+
+      // Add to available labels if not already there
+      if (!availableLabels.includes(formatted)) {
+        setAvailableLabels((prev) => [...prev, formatted].sort());
+      }
+    }
+  };
+
+  const removeLabel = (label: string) => {
+    setSelectedLabels((prev) => prev.filter((l) => l !== label));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setError("");
+    setIsSubmitting(true);
 
     try {
-      // Prepare the meal data
+      const ingredientsArray = formData.ingredients
+        .split("\n")
+        .map((i) => i.trim())
+        .filter(Boolean);
+
       const updatedMeal = {
         name: formData.name,
-        ingredients: formData.ingredients
-          ? formData.ingredients.split("\n").filter((line) => line.trim())
-          : undefined,
-        instructions: formData.instructions || undefined,
-        image: formData.image || undefined,
+        ingredients: ingredientsArray,
+        instructions: formData.instructions,
+        image: formData.image,
         complexity: formData.complexity,
         cuisine: formData.cuisine,
-        labels: formData.labels
-          ? formData.labels.split(",").map((label) => label.trim()).filter(Boolean)
-          : undefined,
+        labels: selectedLabels,
         prepTime: formData.prepTime ? parseInt(formData.prepTime) : undefined,
         servings: formData.servings ? parseInt(formData.servings) : undefined,
-        spiciness: formData.spiciness !== "0" ? parseInt(formData.spiciness) : undefined,
+        spiciness: formData.spiciness ? parseInt(formData.spiciness) : 0,
       };
 
-      // Send to API route
       const response = await fetch(`/api/meals/${id}`, {
         method: "PUT",
         headers: {
@@ -123,9 +158,7 @@ function EditMealForm() {
         throw new Error("Failed to update meal");
       }
 
-      // Redirect to meal detail page
       router.push(`/meal/${id}`);
-      router.refresh();
     } catch (err) {
       setError("Failed to update meal. Please try again.");
       setIsSubmitting(false);
@@ -134,304 +167,283 @@ function EditMealForm() {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen p-8">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-center text-gray-500">Loading...</p>
-        </div>
-      </main>
+      <ProtectedRoute>
+        <main className="min-h-screen p-8">
+          <div className="max-w-4xl mx-auto">
+            <p>Loading...</p>
+          </div>
+        </main>
+      </ProtectedRoute>
     );
   }
 
-  if (!meal) {
+  if (error && !meal) {
     return (
-      <main className="min-h-screen p-8">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-center text-red-500">Meal not found</p>
-          <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
-            ← Back to recipes
-          </Link>
-        </div>
-      </main>
+      <ProtectedRoute>
+        <main className="min-h-screen p-8">
+          <div className="max-w-4xl mx-auto">
+            <p className="text-red-500">{error}</p>
+            <Link href="/" className="text-blue-400 hover:underline">
+              ← Back to recipes
+            </Link>
+          </div>
+        </main>
+      </ProtectedRoute>
     );
   }
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Back button */}
-        <Link
-          href={`/meal/${id}`}
-          className="inline-block mb-6 text-blue-600 dark:text-blue-400 hover:underline"
-        >
-          ← Back to recipe
-        </Link>
+    <ProtectedRoute>
+      <main className="min-h-screen p-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Back button */}
+          <Link
+            href={`/meal/${id}`}
+            className="inline-block mb-6 text-blue-400 hover:underline"
+          >
+            ← Back to recipe
+          </Link>
 
-        <h1 className="text-4xl font-bold mb-8">Edit Meal</h1>
+          <h1 className="text-4xl font-bold mb-8">Edit Meal</h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Name - Required */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Recipe Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-              placeholder="e.g., Spaghetti Carbonara"
-            />
-          </div>
-
-          {/* Complexity - Required */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Complexity <span className="text-red-500">*</span>
-            </label>
-            <select
-              required
-              value={formData.complexity}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  complexity: e.target.value as "easy" | "medium" | "hard",
-                })
-              }
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-            >
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
-            </select>
-          </div>
-
-          {/* Cuisine - Required */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Cuisine <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.cuisine}
-              onChange={(e) => setFormData({ ...formData, cuisine: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-              placeholder="e.g., Italian, Chinese, Mexican"
-            />
-          </div>
-
-          {/* Spiciness - Optional */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Spiciness Level <span className="text-gray-500 text-xs">(optional)</span>
-            </label>
-            <select
-              value={formData.spiciness}
-              onChange={(e) => setFormData({ ...formData, spiciness: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-            >
-              <option value="0">Not spicy at all</option>
-              <option value="1">🌶️ Mild</option>
-              <option value="2">🌶️🌶️ Medium</option>
-              <option value="3">🌶️🌶️🌶️ Hot</option>
-            </select>
-          </div>
-
-          {/* Ingredients - Optional */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Ingredients <span className="text-gray-500 text-xs">(optional)</span>
-            </label>
-            <textarea
-              value={formData.ingredients}
-              onChange={(e) => setFormData({ ...formData, ingredients: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-              rows={6}
-              placeholder="Enter each ingredient on a new line"
-            />
-            <p className="text-xs text-gray-500 mt-1">One ingredient per line</p>
-          </div>
-
-          {/* Instructions - Optional */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Instructions <span className="text-gray-500 text-xs">(optional)</span>
-            </label>
-            <textarea
-              value={formData.instructions}
-              onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-              rows={8}
-              placeholder="Enter cooking instructions..."
-            />
-          </div>
-
-          {/* Image URL - Optional */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Image URL <span className="text-gray-500 text-xs">(optional)</span>
-            </label>
-            <input
-              type="url"
-              value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-              placeholder="https://example.com/image.jpg"
-            />
-          </div>
-
-          {/* Labels - Optional */}
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Labels <span className="text-gray-500 text-xs">(optional)</span>
-            </label>
-            
-            {/* Dynamic labels as toggle buttons */}
-            {availableLabels.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-3">
-                {availableLabels.map((label) => (
-                  <button
-                    key={label}
-                    type="button"
-                    onClick={() => {
-                      const currentLabels = formData.labels ? formData.labels.split(",").map(l => l.trim()).filter(Boolean) : [];
-                      // Case-insensitive comparison
-                      const labelIndex = currentLabels.findIndex(l => l.toLowerCase() === label.toLowerCase());
-                      
-                      if (labelIndex !== -1) {
-                        // Remove label
-                        const newLabels = currentLabels.filter((_, i) => i !== labelIndex);
-                        setFormData({ ...formData, labels: newLabels.join(", ") });
-                      } else {
-                        // Add label
-                        setFormData({ ...formData, labels: currentLabels.concat(label).join(", ") });
-                      }
-                    }}
-                    className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                      formData.labels.split(",").map(l => l.trim()).some(l => l.toLowerCase() === label.toLowerCase())
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Custom label input */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name */}
             <div>
+              <label className="block text-sm font-medium mb-2">
+                Recipe Name *
+              </label>
               <input
                 type="text"
-                placeholder="Add custom label (press Enter to add)"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    const input = e.currentTarget;
-                    const rawLabel = input.value.trim();
-                    if (rawLabel) {
-                      // Format: capitalize first letter, lowercase rest
-                      const formatted = rawLabel.charAt(0).toUpperCase() + rawLabel.slice(1).toLowerCase();
-                      const currentLabels = formData.labels ? formData.labels.split(",").map(l => l.trim()).filter(Boolean) : [];
-                      // Check if label already exists (case-insensitive)
-                      if (!currentLabels.some(l => l.toLowerCase() === formatted.toLowerCase())) {
-                        setFormData({ ...formData, labels: currentLabels.concat(formatted).join(", ") });
-                      }
-                      input.value = "";
-                    }
-                  }
-                }}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
+                name="name"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
               />
-              <p className="text-xs text-gray-500 mt-1">Type a custom label and press Enter to add it</p>
             </div>
 
-            {/* Show selected labels */}
-            {formData.labels && (
-              <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Selected labels:</p>
-                <div className="flex flex-wrap gap-2">
-                  {formData.labels.split(",").map(l => l.trim()).filter(Boolean).map((label) => (
+            {/* Complexity */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Complexity *
+              </label>
+              <select
+                name="complexity"
+                required
+                value={formData.complexity}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+              >
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+
+            {/* Cuisine */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Cuisine *
+              </label>
+              <input
+                type="text"
+                name="cuisine"
+                required
+                value={formData.cuisine}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+                placeholder="e.g., Italian, Chinese, Mexican"
+              />
+            </div>
+
+            {/* Prep Time */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Prep Time (minutes)
+              </label>
+              <input
+                type="number"
+                name="prepTime"
+                value={formData.prepTime}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+                placeholder="30"
+              />
+            </div>
+
+            {/* Servings */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Servings
+              </label>
+              <input
+                type="number"
+                name="servings"
+                value={formData.servings}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+                placeholder="4"
+              />
+            </div>
+
+            {/* Spiciness */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Spiciness Level
+              </label>
+              <select
+                name="spiciness"
+                value={formData.spiciness}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+              >
+                <option value="0">Not Spicy</option>
+                <option value="1">Mild 🌶️</option>
+                <option value="2">Medium 🌶️🌶️</option>
+                <option value="3">Hot 🌶️🌶️🌶️</option>
+              </select>
+            </div>
+
+            {/* Ingredients */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Ingredients (one per line)
+              </label>
+              <textarea
+                name="ingredients"
+                value={formData.ingredients}
+                onChange={handleChange}
+                rows={8}
+                className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+                placeholder="2 cups flour&#10;1 cup sugar&#10;3 eggs"
+              />
+            </div>
+
+            {/* Instructions */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Instructions
+              </label>
+              <textarea
+                name="instructions"
+                value={formData.instructions}
+                onChange={handleChange}
+                rows={10}
+                className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+                placeholder="Step-by-step instructions..."
+              />
+            </div>
+
+            {/* Image URL */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Image URL
+              </label>
+              <input
+                type="url"
+                name="image"
+                value={formData.image}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
+
+            {/* Labels */}
+            <div>
+              <label className="block text-sm font-medium mb-2">Labels</label>
+
+              {/* Available labels as toggle buttons */}
+              {availableLabels.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {availableLabels.map((label) => (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={() => toggleLabel(label)}
+                      className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                        selectedLabels.includes(label)
+                          ? "bg-blue-600 text-white"
+                          : "bg-white/10 text-white hover:bg-white/20"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Selected labels */}
+              {selectedLabels.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {selectedLabels.map((label) => (
                     <span
                       key={label}
-                      className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs flex items-center gap-1"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded-full text-sm"
                     >
                       {label}
                       <button
                         type="button"
-                        onClick={() => {
-                          const currentLabels = formData.labels.split(",").map(l => l.trim()).filter(Boolean);
-                          const newLabels = currentLabels.filter(l => l !== label);
-                          setFormData({ ...formData, labels: newLabels.join(", ") });
-                        }}
-                        className="hover:text-red-600"
+                        onClick={() => removeLabel(label)}
+                        className="hover:text-red-300"
                       >
                         ×
                       </button>
                     </span>
                   ))}
                 </div>
+              )}
+
+              {/* Custom label input */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={customLabel}
+                  onChange={(e) => setCustomLabel(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addCustomLabel();
+                    }
+                  }}
+                  className="flex-1 px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+                  placeholder="Add custom label..."
+                />
+                <button
+                  type="button"
+                  onClick={addCustomLabel}
+                  className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200">
+                {error}
               </div>
             )}
-          </div>
 
-          {/* Prep Time & Servings */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Prep Time (minutes) <span className="text-gray-500 text-xs">(optional)</span>
-              </label>
-              <input
-                type="number"
-                min="1"
-                value={formData.prepTime}
-                onChange={(e) => setFormData({ ...formData, prepTime: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-                placeholder="e.g., 30"
-              />
+            {/* Submit button */}
+            <div className="flex gap-4">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold rounded-lg hover:bg-white/20 disabled:bg-white/5 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
+              >
+                {isSubmitting ? "SAVING..." : "SAVE CHANGES"}
+              </button>
+              <Link
+                href={`/meal/${id}`}
+                className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-gray-300 font-semibold rounded-lg hover:bg-white/20 transition-colors"
+              >
+                CANCEL
+              </Link>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Servings <span className="text-gray-500 text-xs">(optional)</span>
-              </label>
-              <input
-                type="number"
-                min="1"
-                value={formData.servings}
-                onChange={(e) => setFormData({ ...formData, servings: e.target.value })}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700"
-                placeholder="e.g., 4"
-              />
-            </div>
-          </div>
-
-          {/* Error message */}
-          {error && (
-            <div className="p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          {/* Submit button */}
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-6 py-3 bg-transparent text-white font-semibold rounded-lg hover:bg-white/10 disabled:bg-transparent disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
-            >
-              {isSubmitting ? "SAVING..." : "SAVE CHANGES"}
-            </button>
-            <Link
-              href={`/meal/${id}`}
-              className="px-6 py-3 bg-transparent text-gray-400 font-semibold rounded-lg hover:bg-white/10 transition-colors"
-            >
-              CANCEL
-            </Link>
-          </div>
-        </form>
-      </div>
-    </main>
+          </form>
+        </div>
+      </main>
+    </ProtectedRoute>
   );
 }
