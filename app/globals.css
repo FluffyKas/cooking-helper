@@ -19,12 +19,21 @@ body {
 }
 
 .dark body {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #404040 100%);
+  background: url("/assets/app-bg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
   background-attachment: fixed;
+  background-position: center;
 }
 
 /* Apply Lora to all headings */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-lora), serif;
   font-weight: 700;
+}
+
+/* Style dropdown options in dark mode */
+.dark select option {
+  background-color: #2d2d2d;
+  color: white;
 }

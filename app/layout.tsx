@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Lora, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AuthProvider } from "@/components/AuthProvider";
 
 const lora = Lora({ 
   subsets: ["latin"],
@@ -28,7 +29,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${lora.variable} ${inter.variable}`}>
       <body className={inter.className}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

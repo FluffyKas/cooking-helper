@@ -12,8 +12,8 @@ export function formatLabel(label: string): string {
 /**
  * Get all unique labels from existing meals, formatted consistently
  */
-export function getAllUniqueLabels(): string[] {
-  const meals = getAllMeals();
+export async function getAllUniqueLabels(): Promise<string[]> {
+  const meals = await getAllMeals();
   const labelSet = new Set<string>();
 
   meals.forEach((meal) => {

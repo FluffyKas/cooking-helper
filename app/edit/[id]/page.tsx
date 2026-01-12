@@ -4,15 +4,19 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Meal } from "@/types/meal";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
-export default async function EditMealPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  
-  return <EditMealForm id={id} />;
+export default function EditMealPage({ params }: { params: { id: string } }) {
+  return (
+    <ProtectedRoute>
+      <EditMealForm params={params} />
+    </ProtectedRoute>
+  );
 }
 
-function EditMealForm({ id }: { id: string }) {
+function EditMealForm({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const id = params.id;
   const [meal, setMeal] = useState<Meal | null>(null);
   const [availableLabels, setAvailableLabels] = useState<string[]>([]);
   const [formData, setFormData] = useState({

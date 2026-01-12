@@ -6,12 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate": "tsx scripts/migrate-to-supabase.ts"
   },
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "next": "^15"
+    "next": "^15",
+    "@supabase/supabase-js": "^2.39.0"
   },
   "devDependencies": {
     "typescript": "^5",
@@ -21,6 +23,9 @@
     "postcss": "^8",
     "tailwindcss": "^3.4",
     "eslint": "^8",
-    "eslint-config-next": "^15"
+    "eslint-config-next": "^15",
+    "tsx": "^4.7.0",
+    "dotenv": "^16.3.1",
+    "autoprefixer": "^10"
   }
 }

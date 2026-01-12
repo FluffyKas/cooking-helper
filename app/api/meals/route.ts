@@ -1,23 +1,10 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { supabase } from "@/lib/supabase";
 import { formatLabel } from "@/lib/labels";
 
 export async function POST(request: Request) {
   try {
     const newMeal = await request.json();
-
-    // Read existing meals
-    const filePath = path.join(process.cwd(), "data", "meals.json");
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const meals = JSON.parse(fileContents);
-
-    // Generate new ID (simple increment based on existing IDs)
-    const maxId = meals.reduce((max: number, meal: any) => {
-      const id = parseInt(meal.id);
-      return id > max ? id : max;
-    }, 0);
-    const newId = (maxId + 1).toString();
 
     // Format labels
     if (newMeal.labels && Array.isArray(newMeal.labels)) {
@@ -26,18 +13,35 @@ export async function POST(request: Request) {
         .filter(Boolean);
     }
 
-    // Add new meal with generated ID
-    const mealToAdd = {
-      id: newId,
-      ...newMeal,
+    // Transform field names to match database
+    const mealForDb = {
+      name: newMeal.name,
+      complexity: newMeal.complexity,
+      cuisine: newMeal.cuisine,
+      ingredients: newMeal.ingredients || null,
+      instructions: newMeal.instructions || null,
+      image: newMeal.image || null,
+      labels: newMeal.labels || null,
+      prep_time: newMeal.prepTime || null,
+      servings: newMeal.servings || null,
+      spiciness: newMeal.spiciness || null,
     };
 
-    meals.push(mealToAdd);
+    const { data, error } = await supabase
+      .from('meals')
+      .insert([mealForDb])
+      .select()
+      .single();
 
-    // Write back to file
-    fs.writeFileSync(filePath, JSON.stringify(meals, null, 2));
+    if (error) {
+      console.error("Error adding meal:", error);
+      return NextResponse.json(
+        { error: "Failed to add meal" },
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json({ success: true, meal: mealToAdd });
+    return NextResponse.json({ success: true, meal: data });
   } catch (error) {
     console.error("Error adding meal:", error);
     return NextResponse.json(

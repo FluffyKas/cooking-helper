@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { supabase } from "@/lib/supabase";
 import { formatLabel } from "@/lib/labels";
 
 // GET single meal
@@ -10,17 +9,18 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const filePath = path.join(process.cwd(), "data", "meals.json");
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const meals = JSON.parse(fileContents);
+    
+    const { data, error } = await supabase
+      .from('meals')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-    const meal = meals.find((m: any) => m.id === id);
-
-    if (!meal) {
+    if (error || !data) {
       return NextResponse.json({ error: "Meal not found" }, { status: 404 });
     }
 
-    return NextResponse.json(meal);
+    return NextResponse.json(data);
   } catch (error) {
     console.error("Error getting meal:", error);
     return NextResponse.json(
@@ -39,18 +39,6 @@ export async function PUT(
     const { id } = await params;
     const updatedData = await request.json();
 
-    // Read existing meals
-    const filePath = path.join(process.cwd(), "data", "meals.json");
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const meals = JSON.parse(fileContents);
-
-    // Find and update the meal
-    const mealIndex = meals.findIndex((m: any) => m.id === id);
-
-    if (mealIndex === -1) {
-      return NextResponse.json({ error: "Meal not found" }, { status: 404 });
-    }
-
     // Format labels
     if (updatedData.labels && Array.isArray(updatedData.labels)) {
       updatedData.labels = updatedData.labels
@@ -58,16 +46,34 @@ export async function PUT(
         .filter(Boolean);
     }
 
-    // Update meal while keeping the ID
-    meals[mealIndex] = {
-      id: id,
-      ...updatedData,
+    // Transform field names to match database
+    const mealForDb = {
+      name: updatedData.name,
+      complexity: updatedData.complexity,
+      cuisine: updatedData.cuisine,
+      ingredients: updatedData.ingredients || null,
+      instructions: updatedData.instructions || null,
+      image: updatedData.image || null,
+      labels: updatedData.labels || null,
+      prep_time: updatedData.prepTime || null,
+      servings: updatedData.servings || null,
+      spiciness: updatedData.spiciness || null,
+      updated_at: new Date().toISOString(),
     };
 
-    // Write back to file
-    fs.writeFileSync(filePath, JSON.stringify(meals, null, 2));
+    const { data, error } = await supabase
+      .from('meals')
+      .update(mealForDb)
+      .eq('id', id)
+      .select()
+      .single();
 
-    return NextResponse.json({ success: true, meal: meals[mealIndex] });
+    if (error) {
+      console.error("Error updating meal:", error);
+      return NextResponse.json({ error: "Failed to update meal" }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true, meal: data });
   } catch (error) {
     console.error("Error updating meal:", error);
     return NextResponse.json(

@@ -16,9 +16,9 @@ export default function MealCard({ meal }: MealCardProps) {
   return (
     <div className="relative group">
       <Link href={`/meal/${meal.id}`}>
-        <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer bg-white dark:bg-gray-800/90 dark:border-gray-700">
+        <div className="border border-white/20 rounded-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer bg-white/10 dark:bg-white/10 backdrop-blur-md dark:border-white/10">
           {/* Image */}
-          <div className="relative h-48 bg-gray-200 dark:bg-gray-700">
+          <div className="relative h-48 bg-gray-200 dark:bg-gray-700/50">
             {meal.image ? (
               <Image
                 src={meal.image}
@@ -48,10 +48,10 @@ export default function MealCard({ meal }: MealCardProps) {
               <span className="capitalize">{meal.complexity}</span>
               <span>•</span>
               <span>{meal.cuisine}</span>
-              {meal.prepTime && (
+              {meal.prep_time && (
                 <>
                   <span>•</span>
-                  <span>{meal.prepTime} min</span>
+                  <span>{meal.prep_time} min</span>
                 </>
               )}
             </div>
@@ -77,7 +77,7 @@ export default function MealCard({ meal }: MealCardProps) {
       <Link
         href={`/edit/${meal.id}`}
         onClick={(e) => e.stopPropagation()}
-        className="absolute top-2 right-2 p-2 bg-white/95 dark:bg-gray-800/95 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 dark:hover:bg-gray-700"
+        className="absolute top-2 right-2 p-2 bg-white/20 dark:bg-white/20 backdrop-blur-md border border-white/30 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/30"
         aria-label="Edit recipe"
       >
         <svg

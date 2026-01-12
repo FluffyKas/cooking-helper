@@ -5,7 +5,7 @@ import { getMealById } from "@/lib/meals";
 
 export default async function MealDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const meal = getMealById(id);
+  const meal = await getMealById(id);
 
   if (!meal) {
     notFound();
@@ -40,7 +40,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           </div>
           <Link
             href={`/edit/${id}`}
-            className="flex items-center gap-2 px-4 py-2 bg-transparent text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -66,10 +66,10 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
             <span className="font-semibold">Cuisine:</span>
             <span>{meal.cuisine}</span>
           </div>
-          {meal.prepTime && (
+          {meal.prep_time && (
             <div className="flex items-center gap-2">
               <span className="font-semibold">Prep Time:</span>
-              <span>{meal.prepTime} minutes</span>
+              <span>{meal.prep_time} minutes</span>
             </div>
           )}
           {meal.servings && (

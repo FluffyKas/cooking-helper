@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function AddMealPage() {
   const router = useRouter();
@@ -85,17 +86,18 @@ export default function AddMealPage() {
   };
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Back button */}
-        <Link
-          href="/"
-          className="inline-block mb-6 text-blue-600 dark:text-blue-400 hover:underline"
-        >
-          ← Back to recipes
-        </Link>
+    <ProtectedRoute>
+      <main className="min-h-screen p-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Back button */}
+          <Link
+            href="/"
+            className="inline-block mb-6 text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            ← Back to recipes
+          </Link>
 
-        <h1 className="text-4xl font-bold mb-8">Add New Meal</h1>
+          <h1 className="text-4xl font-bold mb-8">Add New Meal</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name - Required */}
@@ -363,5 +365,6 @@ export default function AddMealPage() {
         </form>
       </div>
     </main>
+    </ProtectedRoute>
   );
 }
