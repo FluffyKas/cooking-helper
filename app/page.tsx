@@ -4,12 +4,16 @@ import LogoutButton from "@/components/LogoutButton";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Button from "@/components/Button";
 
-export default async function Home() {
+// Force dynamic rendering - no caching
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function Home(): Promise<JSX.Element> {
   const meals = await getAllMeals();
 
   return (
     <ProtectedRoute>
-      <div className="max-w-7xl mx-auto mt-6">
+    <div className="max-w-7xl mx-auto mt-6">
         <header className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold text-white/80">Cooking Helper</h1>
           <div className="flex items-stretch gap-4">
