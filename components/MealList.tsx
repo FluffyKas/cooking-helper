@@ -88,12 +88,12 @@ export default function MealList({ meals }: MealListProps) {
           placeholder="Search recipes by name..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-3 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white placeholder:text-gray-400"
+          className="w-full px-4 py-3 border-white/70 border-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-black text-white placeholder:text-gray-200"
         />
       </div>
 
       {/* Filters */}
-      <div className="mb-6 p-4 border border-white/20 rounded-lg bg-white/10 backdrop-blur-md">
+      <div className="mb-6 p-4 border-2 border-white/70 bg-black rounded-md">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-lg">Filters</h3>
           {hasActiveFilters && (
@@ -113,7 +113,7 @@ export default function MealList({ meals }: MealListProps) {
             <select
               value={selectedComplexity}
               onChange={(e) => setSelectedComplexity(e.target.value as Complexity | "all")}
-              className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white appearance-none cursor-pointer"
+              className="w-full px-3 py-2 border-2 border-white/70 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-black text-white appearance-none cursor-pointer"
             >
               <option value="all">All</option>
               <option value="easy">Easy</option>
@@ -128,7 +128,7 @@ export default function MealList({ meals }: MealListProps) {
             <select
               value={selectedCuisine}
               onChange={(e) => setSelectedCuisine(e.target.value)}
-              className="w-full px-3 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white appearance-none cursor-pointer"
+              className="w-full px-3 py-2 border-2 border-white/70 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-black text-white appearance-none cursor-pointer"
             >
               <option value="all">All</option>
               {cuisines.map((cuisine) => (
@@ -151,7 +151,7 @@ export default function MealList({ meals }: MealListProps) {
                 className={`px-3 py-1 rounded-full text-sm transition-colors ${
                   selectedLabels.includes(label)
                     ? "bg-blue-600 text-white"
-                    : "bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    : "bg-black border-2 border-white/70 rounded-md hover:bg-white hover:text-black"
                 }`}
               >
                 {label}
@@ -172,7 +172,7 @@ export default function MealList({ meals }: MealListProps) {
         <button
           onClick={pickRandomRecipe}
           disabled={filteredMeals.length === 0}
-          className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold rounded-lg hover:bg-white/20 disabled:bg-white/5 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+          className="px-4 py-2 bg-black border-2 border-white/70 text-white/80 font-semibold rounded-md hover:bg-white hover:text-black/90 disabled:bg-white/5 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
         >
           <span>🎲</span>
           <span>RANDOM RECIPE</span>

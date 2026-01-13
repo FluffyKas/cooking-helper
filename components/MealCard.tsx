@@ -16,7 +16,7 @@ export default function MealCard({ meal }: MealCardProps) {
   return (
     <div className="relative group">
       <Link href={`/meal/${meal.id}`}>
-        <div className="border border-white/20 rounded-lg overflow-hidden hover:shadow-xl transition-all cursor-pointer bg-white/10 backdrop-blur-md">
+        <div className="border-2 border-white/70 rounded-md overflow-hidden hover:shadow-xl transition-all cursor-pointer bg-black hover:scale-105">
           {/* Image */}
           <div className="relative h-48 bg-gray-200 dark:bg-gray-700/50">
             {meal.image ? (
@@ -62,7 +62,7 @@ export default function MealCard({ meal }: MealCardProps) {
                 {meal.labels.map((label) => (
                   <span
                     key={label}
-                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-full"
+                    className="text-xs px-2 py-1 bg-black rounded-md text-white/80 border"
                   >
                     {label}
                   </span>
