@@ -8,12 +8,11 @@ export default function MealDetailPage({ params }: { params: { id: string } }) {
 
   if (!meal) {
     notFound();
-  }
+  } 
 
   return (
     <main className="min-h-screen p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Back button */}
         <Link 
           href="/meals"
           className="inline-block mb-6 text-blue-600 dark:text-blue-400 hover:underline"
@@ -21,10 +20,8 @@ export default function MealDetailPage({ params }: { params: { id: string } }) {
           ← Back to recipes
         </Link>
 
-        {/* Header */}
         <h1 className="text-4xl font-bold mb-4">{meal.name}</h1>
 
-        {/* Meta info */}
         <div className="flex flex-wrap gap-4 text-gray-600 dark:text-gray-400 mb-6">
           <div className="flex items-center gap-2">
             <span className="font-semibold">Complexity:</span>
@@ -50,7 +47,6 @@ export default function MealDetailPage({ params }: { params: { id: string } }) {
           )}
         </div>
 
-        {/* Labels */}
         {meal.labels && meal.labels.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-6">
             {meal.labels.map((label) => (
@@ -64,7 +60,6 @@ export default function MealDetailPage({ params }: { params: { id: string } }) {
           </div>
         )}
 
-        {/* Image */}
         {meal.image && (
           <div className="relative h-96 mb-8 rounded-lg overflow-hidden">
             <Image
@@ -77,7 +72,6 @@ export default function MealDetailPage({ params }: { params: { id: string } }) {
           </div>
         )}
 
-        {/* Ingredients */}
         {meal.ingredients && meal.ingredients.length > 0 && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Ingredients</h2>
@@ -89,7 +83,6 @@ export default function MealDetailPage({ params }: { params: { id: string } }) {
           </div>
         )}
 
-        {/* Instructions */}
         {meal.instructions && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Instructions</h2>

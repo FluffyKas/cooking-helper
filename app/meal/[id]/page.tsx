@@ -11,6 +11,9 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
     notFound();
   }
 
+  // Type assertion - after notFound check, meal is guaranteed to exist
+  const mealData = meal;
+
   // Generate chili icons based on spiciness level
   const getSpicyIcons = (level?: number) => {
     if (!level || level === 0) return null;
@@ -31,8 +34,8 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
         {/* Header with Edit button */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start gap-4">
-            <h1 className="text-4xl font-bold">{meal.name}</h1>
-            {meal.spiciness && meal.spiciness > 0 && (
+            <h1 className="text-4xl font-bold">{mealData.name}</h1>
+            {mealData.spiciness && mealData.spiciness > 0 && (
               <span className="text-3xl">
                 {getSpicyIcons(meal.spiciness)}
               </span>
@@ -59,26 +62,26 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           <div className="flex items-center gap-2">
             <span className="font-semibold">Complexity:</span>
             <span className="capitalize px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm">
-              {meal.complexity}
+              {mealData.complexity}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-semibold">Cuisine:</span>
-            <span>{meal.cuisine}</span>
+            <span>{mealData.cuisine}</span>
           </div>
-          {meal.prep_time && (
+          {mealData.prep_time && (
             <div className="flex items-center gap-2">
               <span className="font-semibold">Prep Time:</span>
-              <span>{meal.prep_time} minutes</span>
+              <span>{mealData.prep_time} minutes</span>
             </div>
           )}
-          {meal.servings && (
+          {mealData.servings && (
             <div className="flex items-center gap-2">
               <span className="font-semibold">Servings:</span>
-              <span>{meal.servings}</span>
+              <span>{mealData.servings}</span>
             </div>
           )}
-          {meal.spiciness && meal.spiciness > 0 && (
+          {mealData.spiciness && mealData.spiciness > 0 && (
             <div className="flex items-center gap-2">
               <span className="font-semibold">Spiciness:</span>
               <span className="text-lg">{getSpicyIcons(meal.spiciness)}</span>
@@ -87,9 +90,9 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
         </div>
 
         {/* Labels */}
-        {meal.labels && meal.labels.length > 0 && (
+        {mealData.labels && mealData.labels.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-6">
-            {meal.labels.map((label) => (
+            {mealData.labels.map((label) => (
               <span
                 key={label}
                 className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm"
@@ -101,11 +104,11 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
         )}
 
         {/* Image */}
-        {meal.image && (
+        {mealData.image && (
           <div className="relative h-96 mb-8 rounded-lg overflow-hidden">
             <Image
-              src={meal.image}
-              alt={meal.name}
+              src={mealData.image}
+              alt={mealData.name}
               fill
               className="object-cover"
               priority
@@ -114,11 +117,11 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
         )}
 
         {/* Ingredients */}
-        {meal.ingredients && meal.ingredients.length > 0 && (
+        {mealData.ingredients && mealData.ingredients.length > 0 && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Ingredients</h2>
             <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-              {meal.ingredients.map((ingredient, index) => (
+              {mealData.ingredients.map((ingredient, index) => (
                 <li key={index}>{ingredient}</li>
               ))}
             </ul>
@@ -126,11 +129,11 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
         )}
 
         {/* Instructions */}
-        {meal.instructions && (
+        {mealData.instructions && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Instructions</h2>
             <div className="text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed">
-              {meal.instructions}
+              {mealData.instructions}
             </div>
           </div>
         )}
