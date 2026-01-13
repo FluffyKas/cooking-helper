@@ -151,7 +151,7 @@ export default function MealList({ meals }: MealListProps) {
                 className={`px-3 py-1 rounded-full text-sm transition-colors ${
                   selectedLabels.includes(label)
                     ? "bg-blue-600 text-white"
-                    : "bg-black border-2 border-white/70 rounded-md hover:bg-white hover:text-black"
+                    : "bg-black border-2 border-red rounded-md hover:bg-white hover:text-black"
                 }`}
               >
                 {label}

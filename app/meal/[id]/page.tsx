@@ -65,7 +65,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
         <div className="flex flex-wrap gap-4 text-gray-600 dark:text-gray-400 mb-6">
           <div className="flex items-center gap-2">
             <span className="font-semibold">Complexity:</span>
-            <span className="capitalize px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm">
+            <span className="capitalize">
               {mealData.complexity}
             </span>
           </div>
@@ -99,7 +99,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
             {mealData.labels.map((label) => (
               <span
                 key={label}
-                className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm"
+                className="px-3 py-1 bg-black border-2 border-white/70 text-white/70 rounded-md text-sm"
               >
                 {label}
               </span>
