@@ -32,7 +32,7 @@ export default function FavoriteButton({ mealId, size = "md" }: FavoriteButtonPr
           .select('id')
           .eq('user_id', userId)
           .eq('meal_id', mealId)
-          .single();
+          .maybeSingle();
 
         setIsFavorited(!!data);
       } catch (error) {
