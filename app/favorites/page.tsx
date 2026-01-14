@@ -20,6 +20,8 @@ export default function FavoritesPage() {
       return;
     }
 
+    const userId = user.id;
+
     async function loadFavorites() {
       try {
         const { data } = await supabase
@@ -28,7 +30,7 @@ export default function FavoritesPage() {
             meal_id,
             meals (*)
           `)
-          .eq('user_id', user.id)
+          .eq('user_id', userId)
           .order('created_at', { ascending: false });
 
         const meals = data?.map(fav => fav.meals as unknown as Meal).filter(Boolean) || [];
