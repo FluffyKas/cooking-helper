@@ -82,3 +82,31 @@ export async function PUT(
     );
   }
 }
+
+// DELETE meal
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    const { error } = await supabase
+      .from('meals')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error("Error deleting meal:", error);
+      return NextResponse.json({ error: "Failed to delete meal" }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting meal:", error);
+    return NextResponse.json(
+      { error: "Failed to delete meal" },
+      { status: 500 }
+    );
+  }
+}

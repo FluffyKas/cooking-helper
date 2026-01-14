@@ -166,7 +166,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
       }
 
       const result = await response.json();
-      const redirectId = mode === "add" ? result.id : mealId;
+      const redirectId = mode === "add" ? result.meal.id : mealId;
 
       // Redirect to meal detail page
       router.push(`/meal/${redirectId}`);
