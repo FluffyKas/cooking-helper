@@ -7,6 +7,13 @@ import { getMealById } from "@/lib/meals";
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+// Label pill colors
+const labelColors = [
+  "bg-mint-200 text-gray-800",
+  "bg-lavender-200 text-gray-800",
+  "bg-coral-200 text-gray-800",
+];
+
 export default async function MealDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const meal = await getMealById(id);
@@ -30,7 +37,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
         {/* Back button */}
         <Link 
           href="/"
-          className="inline-block mb-6 text-blue-600 dark:text-blue-400 hover:underline"
+          className="inline-block mb-6 text-mint-500 font-medium hover:underline"
         >
           ← Back to recipes
         </Link>
@@ -47,7 +54,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           </div>
           <Link
             href={`/edit/${id}`}
-            className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-mint-200 text-nav-dark font-semibold rounded-2xl hover:bg-mint-300 transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +69,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
         </div>
 
         {/* Meta info */}
-        <div className="flex flex-wrap gap-4 text-gray-600 dark:text-gray-400 mb-6">
+        <div className="flex flex-wrap gap-4 text-gray-600 mb-6">
           <div className="flex items-center gap-2">
             <span className="font-semibold">Complexity:</span>
             <span className="capitalize">
@@ -93,13 +100,13 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           )}
         </div>
 
-        {/* Labels */}
+        {/* Labels - colorful pills */}
         {mealData.labels && mealData.labels.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-6">
-            {mealData.labels.map((label) => (
+            {mealData.labels.map((label, index) => (
               <span
                 key={label}
-                className="px-3 py-1 bg-black border-2 border-white/70 text-white/70 rounded-md text-sm"
+                className={`px-3 py-1 rounded-full text-sm font-medium ${labelColors[index % labelColors.length]}`}
               >
                 {label}
               </span>
@@ -109,7 +116,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
 
         {/* Image */}
         {mealData.image && (
-          <div className="relative h-96 mb-8 rounded-lg overflow-hidden">
+          <div className="relative h-96 mb-8 rounded-2xl overflow-hidden">
             <Image
               src={mealData.image}
               alt={mealData.name}
@@ -124,7 +131,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
         {mealData.ingredients && mealData.ingredients.length > 0 && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Ingredients</h2>
-            <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+            <ul className="list-disc list-inside space-y-2 text-gray-700">
               {mealData.ingredients.map((ingredient, index) => (
                 <li key={index}>{ingredient}</li>
               ))}
@@ -136,7 +143,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
         {mealData.instructions && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Instructions</h2>
-            <div className="text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed">
+            <div className="text-gray-700 whitespace-pre-line leading-relaxed">
               {mealData.instructions}
             </div>
           </div>

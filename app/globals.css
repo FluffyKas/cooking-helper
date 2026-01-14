@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 body {
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #fffbeb;
+  color: #1f2937;
   font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
 
@@ -12,11 +12,11 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-lora), serif;
   font-weight: 700;
-  color: #ffffff;
+  color: #1f2937;
 }
 
 /* Style dropdown options */
 select option {
-  background-color: #1a1a1a;
-  color: white;
+  background-color: #ffffff;
+  color: #1f2937;
 }

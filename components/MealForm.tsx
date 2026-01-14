@@ -200,8 +200,8 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
   if (error && mode === "edit" && !formData.name) {
     return (
       <div className="max-w-4xl mx-auto">
-        <p className="text-red-500">{error}</p>
-        <Link href="/" className="text-blue-400 hover:underline">
+        <p className="text-coral-300">{error}</p>
+        <Link href="/" className="text-mint-500 hover:underline">
           ← Back to recipes
         </Link>
       </div>
@@ -224,7 +224,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
       {/* Back button */}
       <Link
         href={backLink}
-        className="inline-block mb-6 text-blue-400 hover:underline"
+        className="inline-block mb-6 text-mint-500 hover:underline"
       >
         {backText}
       </Link>
@@ -235,7 +235,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         {/* Name - Required */}
         <div>
           <label className="block text-sm font-medium mb-2">
-            Recipe Name <span className="text-red-500">*</span>
+            Recipe Name <span className="text-coral-300">*</span>
           </label>
           <input
             type="text"
@@ -243,7 +243,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
             required
             value={formData.name}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+            className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
             placeholder="e.g., Spaghetti Carbonara"
           />
         </div>
@@ -251,14 +251,14 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         {/* Complexity - Required */}
         <div>
           <label className="block text-sm font-medium mb-2">
-            Complexity <span className="text-red-500">*</span>
+            Complexity <span className="text-coral-300">*</span>
           </label>
           <select
             name="complexity"
             required
             value={formData.complexity}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+            className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
           >
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
@@ -269,7 +269,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         {/* Cuisine - Required */}
         <div>
           <label className="block text-sm font-medium mb-2">
-            Cuisine <span className="text-red-500">*</span>
+            Cuisine <span className="text-coral-300">*</span>
           </label>
           <input
             type="text"
@@ -277,7 +277,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
             required
             value={formData.cuisine}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+            className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
             placeholder="e.g., Italian, Chinese, Mexican"
           />
         </div>
@@ -285,13 +285,13 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         {/* Spiciness - Optional */}
         <div>
           <label className="block text-sm font-medium mb-2">
-            Spiciness Level <span className="text-gray-500 text-xs">(optional)</span>
+            Spiciness Level <span className="text-gray-400 text-xs">(optional)</span>
           </label>
           <select
             name="spiciness"
             value={formData.spiciness}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+            className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
           >
             <option value="0">Not spicy at all</option>
             <option value="1">🌶️ Mild</option>
@@ -303,13 +303,13 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         {/* Ingredients - Optional */}
         <div>
           <label className="block text-sm font-medium mb-2">
-            Ingredients <span className="text-gray-500 text-xs">(optional)</span>
+            Ingredients <span className="text-gray-400 text-xs">(optional)</span>
           </label>
           <textarea
             name="ingredients"
             value={formData.ingredients}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+            className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
             rows={6}
             placeholder="Enter each ingredient on a new line&#10;e.g.,&#10;400g spaghetti&#10;200g pancetta&#10;4 eggs"
           />
@@ -319,13 +319,13 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         {/* Instructions - Optional */}
         <div>
           <label className="block text-sm font-medium mb-2">
-            Instructions <span className="text-gray-500 text-xs">(optional)</span>
+            Instructions <span className="text-gray-400 text-xs">(optional)</span>
           </label>
           <textarea
             name="instructions"
             value={formData.instructions}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+            className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
             rows={8}
             placeholder="Enter cooking instructions..."
           />
@@ -334,14 +334,14 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         {/* Image URL - Optional */}
         <div>
           <label className="block text-sm font-medium mb-2">
-            Image URL <span className="text-gray-500 text-xs">(optional)</span>
+            Image URL <span className="text-gray-400 text-xs">(optional)</span>
           </label>
           <input
             type="url"
             name="image"
             value={formData.image}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+            className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
             placeholder="https://example.com/image.jpg"
           />
         </div>
@@ -349,7 +349,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         {/* Labels - Optional */}
         <div>
           <label className="block text-sm font-medium mb-2">
-            Labels <span className="text-gray-500 text-xs">(optional)</span>
+            Labels <span className="text-gray-400 text-xs">(optional)</span>
           </label>
 
           {/* Available labels as toggle buttons */}
@@ -362,8 +362,8 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
                   onClick={() => toggleLabel(label)}
                   className={`px-3 py-1 rounded-full text-sm transition-colors ${
                     selectedLabels.some((l) => l.toLowerCase() === label.toLowerCase())
-                      ? "bg-blue-600 text-white"
-                      : "bg-white/10 text-white hover:bg-white/20"
+                      ? "bg-mint-300 text-nav-dark"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
                   {label}
@@ -378,13 +378,13 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
               {selectedLabels.map((label) => (
                 <span
                   key={label}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded-full text-sm"
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-mint-300 text-nav-dark rounded-full text-sm"
                 >
                   {label}
                   <button
                     type="button"
                     onClick={() => removeLabel(label)}
-                    className="hover:text-red-300"
+                    className="hover:text-red-600"
                   >
                     ×
                   </button>
@@ -405,13 +405,13 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
                   addCustomLabel();
                 }
               }}
-              className="flex-1 px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+              className="flex-1 px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
               placeholder="Add custom label and press Enter..."
             />
             <button
               type="button"
               onClick={addCustomLabel}
-              className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold rounded-lg hover:bg-white/20 transition-colors"
+              className="px-4 py-2 bg-white/10 backdrop-blur-md border border-gray-200 text-white font-semibold rounded-xl hover:bg-white/20 transition-colors"
             >
               Add
             </button>
@@ -422,7 +422,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-2">
-              Prep Time (minutes) <span className="text-gray-500 text-xs">(optional)</span>
+              Prep Time (minutes) <span className="text-gray-400 text-xs">(optional)</span>
             </label>
             <input
               type="number"
@@ -430,14 +430,14 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
               min="1"
               value={formData.prepTime}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+              className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
               placeholder="e.g., 30"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-2">
-              Servings <span className="text-gray-500 text-xs">(optional)</span>
+              Servings <span className="text-gray-400 text-xs">(optional)</span>
             </label>
             <input
               type="number"
@@ -445,7 +445,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
               min="1"
               value={formData.servings}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-white/10 backdrop-blur-md text-white"
+              className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
               placeholder="e.g., 4"
             />
           </div>
@@ -453,7 +453,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
 
         {/* Error message */}
         {error && (
-          <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200">
+          <div className="p-4 bg-coral-100 border border-coral-200 rounded-xl text-coral-300">
             {error}
           </div>
         )}
@@ -463,14 +463,14 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-3 bg-white/10 backdrop-blur-md border-2 border-white/20 text-white font-semibold rounded-lg hover:bg-white/20 disabled:bg-white/5 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
+            className="px-6 py-3 bg-mint-300 text-nav-dark font-semibold rounded-xl hover:bg-mint-400 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
           >
             {submitText}
           </button>
           <button
             type="button"
             onClick={handleCancel}
-            className="px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-gray-300 font-semibold rounded-lg hover:bg-white/20 transition-colors"
+            className="px-6 py-3 bg-gray-100 text-gray-600 font-semibold rounded-xl hover:bg-gray-200 transition-colors"
           >
             CANCEL
           </button>
