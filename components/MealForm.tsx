@@ -411,7 +411,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
             <button
               type="button"
               onClick={addCustomLabel}
-              className="px-4 py-2 bg-white/10 backdrop-blur-md border border-gray-200 text-white font-semibold rounded-xl hover:bg-white/20 transition-colors"
+              className="px-4 py-2 bg-mint-200 text-nav-dark font-semibold rounded-xl hover:bg-mint-300 transition-colors"
             >
               Add
             </button>
