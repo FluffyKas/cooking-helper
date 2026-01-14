@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getMealById } from "@/lib/meals";
 import DeleteMealButton from "@/components/DeleteMealButton";
+import FavoriteButton from "@/components/FavoriteButton";
 
 // Force dynamic rendering - no caching
 export const dynamic = 'force-dynamic';
@@ -54,6 +55,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
             )}
           </div>
           <div className="flex items-center gap-2">
+            <FavoriteButton mealId={id} />
             <Link
               href={`/edit/${id}`}
               className="flex items-center gap-2 px-4 py-2 bg-mint-200 text-nav-dark font-semibold rounded-2xl hover:bg-mint-300 transition-colors"

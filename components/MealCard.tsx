@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Meal } from "@/types/meal";
+import FavoriteButton from "./FavoriteButton";
 
 interface MealCardProps {
   meal: Meal;
@@ -96,22 +97,25 @@ export default function MealCard({ meal }: MealCardProps) {
         </div>
       </Link>
 
-      {/* Edit button - only visible on hover */}
-      <Link
-        href={`/edit/${meal.id}`}
-        onClick={(e) => e.stopPropagation()}
-        className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
-        aria-label="Edit recipe"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 text-gray-600"
-          viewBox="0 0 20 20"
-          fill="currentColor"
+      {/* Action buttons */}
+      <div className="absolute top-2 right-2 flex items-center gap-1.5">
+        <FavoriteButton mealId={meal.id} size="sm" />
+        <Link
+          href={`/edit/${meal.id}`}
+          onClick={(e) => e.stopPropagation()}
+          className="p-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
+          aria-label="Edit recipe"
         >
-          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-        </svg>
-      </Link>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 text-gray-600"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+          </svg>
+        </Link>
+      </div>
     </div>
   );
 }
