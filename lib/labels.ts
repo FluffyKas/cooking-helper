@@ -1,4 +1,4 @@
-import { getAllMeals } from "./meals";
+import { supabase } from "./supabase";
 
 /**
  * Format a label: capitalize first letter, lowercase rest, trim spaces
@@ -11,13 +11,22 @@ export function formatLabel(label: string): string {
 
 /**
  * Get all unique labels from existing meals, formatted consistently
+ * Only fetches the labels column instead of all meal data
  */
 export async function getAllUniqueLabels(): Promise<string[]> {
-  const meals = await getAllMeals();
+  const { data, error } = await supabase
+    .from('meals')
+    .select('labels');
+
+  if (error) {
+    console.error('Error fetching labels:', error);
+    return [];
+  }
+
   const labelSet = new Set<string>();
 
-  meals.forEach((meal) => {
-    meal.labels?.forEach((label) => {
+  data?.forEach((row) => {
+    row.labels?.forEach((label: string) => {
       const formatted = formatLabel(label);
       if (formatted) {
         labelSet.add(formatted);

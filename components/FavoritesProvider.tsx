@@ -26,12 +26,14 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    const userId = user.id;
+
     async function loadFavorites() {
       try {
         const { data } = await supabase
           .from('favorites')
           .select('meal_id')
-          .eq('user_id', user.id);
+          .eq('user_id', userId);
 
         const favoriteIds = new Set(data?.map(f => f.meal_id) || []);
         setFavorites(favoriteIds);
