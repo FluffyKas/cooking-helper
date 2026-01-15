@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Meal } from "@/types/meal";
+import { getSpicyIcons } from "@/lib/utils";
 import FavoriteButton from "./FavoriteButton";
 import SafeImage from "./SafeImage";
 
@@ -22,11 +23,6 @@ const labelColors = [
 ];
 
 export default function MealCard({ meal }: MealCardProps) {
-  // Generate chili icons based on spiciness level
-  const getSpicyIcons = (level?: number) => {
-    if (!level || level === 0) return null;
-    return "🌶️".repeat(level);
-  };
 
   // Pick accent color based on meal id for consistency
   const accentIndex = meal.id.charCodeAt(0) % accentColors.length;

@@ -487,7 +487,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
               type="text"
               value={customLabel}
               onChange={(e) => setCustomLabel(e.target.value)}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
                   addCustomLabel();

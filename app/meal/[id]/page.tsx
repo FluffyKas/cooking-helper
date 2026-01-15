@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getMealById } from "@/lib/meals";
+import { getSpicyIcons } from "@/lib/utils";
 import DeleteMealButton from "@/components/DeleteMealButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import SafeImage from "@/components/SafeImage";
@@ -26,12 +27,6 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
 
   // Type assertion - after notFound check, meal is guaranteed to exist
   const mealData = meal;
-
-  // Generate chili icons based on spiciness level
-  const getSpicyIcons = (level?: number) => {
-    if (!level || level === 0) return null;
-    return "🌶️".repeat(level);
-  };
 
   return (
     <main className="min-h-screen p-8">
