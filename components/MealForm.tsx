@@ -414,7 +414,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           />
           {/* Image validation error */}
           {imageError && (
-            <p className="mt-2 text-sm text-coral-300">{imageError}</p>
+            <p className="mt-2 text-sm text-coral-300" role="alert" aria-live="polite">{imageError}</p>
           )}
           {/* Image preview */}
           {formData.image && !imageError && (
@@ -551,7 +551,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
 
         {/* Error message */}
         {error && (
-          <div className="p-4 bg-coral-100 border border-coral-200 rounded-xl text-coral-300">
+          <div className="p-4 bg-coral-100 border border-coral-200 rounded-xl text-coral-300" role="alert" aria-live="assertive">
             {error}
           </div>
         )}

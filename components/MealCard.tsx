@@ -8,14 +8,12 @@ interface MealCardProps {
   meal: Meal;
 }
 
-// Rotate through accent colors for card backgrounds
 const accentColors = [
   "bg-mint-100",
   "bg-lavender-100",
   "bg-coral-100",
 ];
 
-// Label pill colors - using 200 shades for contrast against 100 card backgrounds
 const labelColors = [
   "bg-mint-200 text-gray-800",
   "bg-lavender-200 text-gray-800",
@@ -32,7 +30,6 @@ export default function MealCard({ meal }: MealCardProps) {
     <div className="relative group">
       <Link href={`/meal/${meal.id}`}>
         <div className={`rounded-2xl overflow-hidden hover:shadow-xl transition-all cursor-pointer hover:scale-[1.02] ${accentColor}`}>
-          {/* Image */}
           <div className="relative h-48 bg-gray-100">
             {meal.image ? (
               <SafeImage
@@ -47,8 +44,7 @@ export default function MealCard({ meal }: MealCardProps) {
               </div>
             )}
           </div>
-
-          {/* Content */}
+          {/* 156px is more or less the height of the card if there are 2 rows of labels - this has been done for a more consistent card height */}
           <div className="p-4 min-h-[156px]">
             <div className="flex items-start justify-between mb-2">
               <h3 className="font-semibold text-lg text-gray-800">{meal.name}</h3>
@@ -58,8 +54,6 @@ export default function MealCard({ meal }: MealCardProps) {
                 </span>
               )}
             </div>
-
-            {/* Meta info - dot separated */}
             <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-3">
               <span className="capitalize">{meal.complexity}</span>
               <span>·</span>
@@ -71,8 +65,6 @@ export default function MealCard({ meal }: MealCardProps) {
                 </>
               )}
             </div>
-
-            {/* Labels - colorful pills */}
             {meal.labels && meal.labels.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {meal.labels.map((label, index) => {
@@ -93,7 +85,6 @@ export default function MealCard({ meal }: MealCardProps) {
         </div>
       </Link>
 
-      {/* Action buttons */}
       <div className="absolute top-2 right-2 flex items-center gap-1.5">
          <Link
           href={`/edit/${meal.id}`}

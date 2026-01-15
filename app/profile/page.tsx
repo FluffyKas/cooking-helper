@@ -213,10 +213,10 @@ export default function ProfilePage() {
                 </button>
               </form>
               {nicknameError && (
-                <p className="mt-2 text-sm text-coral-300">{nicknameError}</p>
+                <p className="mt-2 text-sm text-coral-300" role="alert" aria-live="polite">{nicknameError}</p>
               )}
               {nicknameSuccess && (
-                <p className="mt-2 text-sm text-mint-500">{nicknameSuccess}</p>
+                <p className="mt-2 text-sm text-mint-500" role="status" aria-live="polite">{nicknameSuccess}</p>
               )}
             </div>
           </div>
@@ -256,13 +256,13 @@ export default function ProfilePage() {
             </div>
 
             {passwordError && (
-              <div className="mt-4 p-3 bg-coral-100 border border-coral-200 rounded-xl text-coral-300 text-sm max-w-lg">
+              <div className="mt-4 p-3 bg-coral-100 border border-coral-200 rounded-xl text-coral-300 text-sm max-w-lg" role="alert" aria-live="polite">
                 {passwordError}
               </div>
             )}
 
             {passwordSuccess && (
-              <div className="mt-4 p-3 bg-mint-100 border border-mint-200 rounded-xl text-mint-500 text-sm max-w-lg">
+              <div className="mt-4 p-3 bg-mint-100 border border-mint-200 rounded-xl text-mint-500 text-sm max-w-lg" role="status" aria-live="polite">
                 {passwordSuccess}
               </div>
             )}
@@ -298,13 +298,13 @@ export default function ProfilePage() {
             </div>
 
             {emailError && (
-              <div className="mt-4 p-3 bg-coral-100 border border-coral-200 rounded-xl text-coral-300 text-sm max-w-sm">
+              <div className="mt-4 p-3 bg-coral-100 border border-coral-200 rounded-xl text-coral-300 text-sm max-w-sm" role="alert" aria-live="polite">
                 {emailError}
               </div>
             )}
 
             {emailSuccess && (
-              <div className="mt-4 p-3 bg-mint-100 border border-mint-200 rounded-xl text-mint-500 text-sm max-w-sm">
+              <div className="mt-4 p-3 bg-mint-100 border border-mint-200 rounded-xl text-mint-500 text-sm max-w-sm" role="status" aria-live="polite">
                 {emailSuccess}
               </div>
             )}
@@ -327,7 +327,7 @@ export default function ProfilePage() {
           </p>
 
           {deleteError && (
-            <div className="p-3 bg-coral-100 border border-coral-200 rounded-xl text-coral-300 text-sm mb-6 max-w-md">
+            <div className="p-3 bg-coral-100 border border-coral-200 rounded-xl text-coral-300 text-sm mb-6 max-w-md" role="alert" aria-live="assertive">
               {deleteError}
             </div>
           )}

@@ -61,7 +61,7 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="p-3 bg-coral-100 border border-coral-200 rounded-xl text-coral-300 text-sm">
+              <div className="p-3 bg-coral-100 border border-coral-200 rounded-xl text-coral-300 text-sm" role="alert" aria-live="assertive">
                 {error}
               </div>
             )}

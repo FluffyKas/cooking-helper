@@ -194,13 +194,14 @@ export default function MealList({ meals }: MealListProps) {
             onClick={pickRandomRecipe}
             disabled={filteredMeals.length === 0}
             className="p-3 md:px-4 bg-lavender-100 text-gray-700 font-medium rounded-xl hover:bg-lavender-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            aria-label="Pick a random recipe"
           >
-            <span>🎲</span>
+            <span aria-hidden="true">🎲</span>
             <span className="hidden md:inline">Random Recipe</span>
           </button>
         </div>
 
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 text-sm" aria-live="polite" aria-atomic="true">
           {filteredMeals.length === meals.length
             ? `${meals.length} recipes`
             : `${filteredMeals.length} of ${meals.length}`}
