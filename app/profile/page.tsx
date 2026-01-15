@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { supabase } from "@/lib/supabase";
+import PageTransition from "@/components/PageTransition";
 import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
@@ -165,8 +166,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-2xl mx-auto">
+    <PageTransition>
+      <main className="min-h-screen p-8">
+        <div className="max-w-2xl mx-auto">
         {/* Back button */}
         <Link
           href="/"
@@ -351,7 +353,8 @@ export default function ProfilePage() {
           onCancel={() => setShowDeleteConfirm(false)}
           isLoading={deleteLoading}
         />
-      </div>
-    </main>
+        </div>
+      </main>
+    </PageTransition>
   );
 }

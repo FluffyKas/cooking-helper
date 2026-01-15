@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
+import PageTransition from "@/components/PageTransition";
 import Link from "next/link";
 
 export default function SignupPage() {
@@ -47,19 +48,22 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <main className="min-h-screen flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
-          <div className="bg-mint-100 rounded-2xl p-8 text-center shadow-lg">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Account Created!</h2>
-            <p className="text-gray-600">Redirecting you to the app...</p>
+      <PageTransition>
+        <main className="min-h-screen flex items-center justify-center p-8">
+          <div className="w-full max-w-md">
+            <div className="bg-mint-100 rounded-2xl p-8 text-center shadow-lg">
+              <h2 className="text-2xl font-bold mb-4 text-gray-800">Account Created!</h2>
+              <p className="text-gray-600">Redirecting you to the app...</p>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </PageTransition>
     );
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-8">
+    <PageTransition>
+      <main className="min-h-screen flex items-center justify-center p-8">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl p-8 shadow-lg">
           <h1 className="text-3xl font-bold mb-2 text-center text-gray-800">Cooking Helper</h1>
@@ -127,5 +131,6 @@ export default function SignupPage() {
         </div>
       </div>
     </main>
+    </PageTransition>
   );
 }

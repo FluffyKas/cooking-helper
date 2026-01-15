@@ -6,6 +6,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { useFavorites } from "@/components/FavoritesProvider";
 import { supabase } from "@/lib/supabase";
 import MealCard from "@/components/MealCard";
+import PageTransition from "@/components/PageTransition";
 import { Meal } from "@/types/meal";
 import Link from "next/link";
 
@@ -70,28 +71,30 @@ export default function FavoritesPage() {
   }
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Favorites</h1>
+    <PageTransition>
+      <main className="min-h-screen p-8">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-4xl font-bold mb-8">Favorites</h1>
 
-        {displayedFavorites.length === 0 ? (
-          <div className="bg-white rounded-2xl p-8 text-center">
-            <p className="text-gray-600 mb-4">You haven&apos;t favorited any recipes yet.</p>
-            <Link
-              href="/"
-              className="inline-block px-6 py-3 bg-mint-300 text-nav-dark font-semibold rounded-xl hover:bg-mint-400 transition-colors"
-            >
-              Browse Recipes
-            </Link>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayedFavorites.map((meal) => (
-              <MealCard key={meal.id} meal={meal} />
-            ))}
-          </div>
-        )}
-      </div>
-    </main>
+          {displayedFavorites.length === 0 ? (
+            <div className="bg-white rounded-2xl p-8 text-center">
+              <p className="text-gray-600 mb-4">You haven&apos;t favorited any recipes yet.</p>
+              <Link
+                href="/"
+                className="inline-block px-6 py-3 bg-mint-300 text-nav-dark font-semibold rounded-xl hover:bg-mint-400 transition-colors"
+              >
+                Browse Recipes
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayedFavorites.map((meal) => (
+                <MealCard key={meal.id} meal={meal} />
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+    </PageTransition>
   );
 }

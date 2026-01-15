@@ -1,6 +1,7 @@
 import { getAllMeals } from "@/lib/meals";
 import MealList from "@/components/MealList";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import PageTransition from "@/components/PageTransition";
 
 // Force dynamic rendering - no caching
 export const dynamic = 'force-dynamic';
@@ -11,9 +12,11 @@ export default async function Home(): Promise<JSX.Element> {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <MealList meals={meals} />
-      </div>
+      <PageTransition>
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <MealList meals={meals} />
+        </div>
+      </PageTransition>
     </ProtectedRoute>
   );
 }

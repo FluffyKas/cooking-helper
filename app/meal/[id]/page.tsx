@@ -5,6 +5,7 @@ import { getSpicyIcons } from "@/lib/utils";
 import DeleteMealButton from "@/components/DeleteMealButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import SafeImage from "@/components/SafeImage";
+import PageTransition from "@/components/PageTransition";
 
 // Force dynamic rendering - no caching
 export const dynamic = 'force-dynamic';
@@ -29,8 +30,9 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
   const mealData = meal;
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
+    <PageTransition>
+      <main className="min-h-screen p-8">
+        <div className="max-w-4xl mx-auto">
         {/* Back button */}
         <Link 
           href="/"
@@ -150,6 +152,7 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           </div>
         )}
       </div>
-    </main>
+      </main>
+    </PageTransition>
   );
 }
