@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useMemo, useCallback } from "react";
 import MealCard from "./MealCard";
 import { Meal, Complexity } from "@/types/meal";
 
@@ -10,7 +9,6 @@ interface MealListProps {
 }
 
 export default function MealList({ meals }: MealListProps) {
-  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedComplexity, setSelectedComplexity] = useState<Complexity | "all">("all");
   const [selectedCuisine, setSelectedCuisine] = useState<string>("all");
@@ -18,6 +16,11 @@ export default function MealList({ meals }: MealListProps) {
 
   // Collapse state for search & filter panel
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Random recipes state
+  const [showRandomModal, setShowRandomModal] = useState(false);
+  const [randomRecipes, setRandomRecipes] = useState<Meal[]>([]);
+  const [isShuffling, setIsShuffling] = useState(false);
 
   const cuisines = useMemo(() => {
     const uniqueCuisines = new Set(meals.map((meal) => meal.cuisine));
@@ -56,12 +59,26 @@ export default function MealList({ meals }: MealListProps) {
     setSelectedLabels([]);
   };
 
-  const pickRandomRecipe = () => {
+  // Pick up to 3 random recipes from filtered meals
+  const pickRandomRecipes = useCallback(() => {
     if (filteredMeals.length === 0) return;
-    const randomIndex = Math.floor(Math.random() * filteredMeals.length);
-    const randomMeal = filteredMeals[randomIndex];
-    router.push(`/meal/${randomMeal.id}`);
-  };
+
+    // Trigger shuffle animation if modal is already open
+    if (showRandomModal) {
+      setIsShuffling(true);
+      setTimeout(() => {
+        const shuffled = [...filteredMeals].sort(() => Math.random() - 0.5);
+        const selected = shuffled.slice(0, Math.min(3, shuffled.length));
+        setRandomRecipes(selected);
+        setIsShuffling(false);
+      }, 150);
+    } else {
+      const shuffled = [...filteredMeals].sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, Math.min(3, shuffled.length));
+      setRandomRecipes(selected);
+      setShowRandomModal(true);
+    }
+  }, [filteredMeals, showRandomModal]);
 
   const hasActiveFilters = searchQuery || selectedComplexity !== "all" ||
     selectedCuisine !== "all" || selectedLabels.length > 0;
@@ -191,13 +208,13 @@ export default function MealList({ meals }: MealListProps) {
 
           {/* Random Recipe button */}
           <button
-            onClick={pickRandomRecipe}
+            onClick={pickRandomRecipes}
             disabled={filteredMeals.length === 0}
             className="p-3 md:px-4 bg-lavender-100 text-gray-700 font-medium rounded-xl hover:bg-lavender-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-            aria-label="Pick a random recipe"
+            aria-label="Pick random recipes"
           >
             <span aria-hidden="true">🎲</span>
-            <span className="hidden md:inline">Random Recipe</span>
+            <span className="hidden md:inline">Random Recipes</span>
           </button>
         </div>
 
@@ -218,6 +235,59 @@ export default function MealList({ meals }: MealListProps) {
         <div className="text-center py-12 bg-white rounded-2xl">
           <p className="text-lg mb-2 text-gray-600">No recipes found</p>
           <p className="text-sm text-gray-400">Try adjusting your filters or search query</p>
+        </div>
+      )}
+
+      {/* Random Recipes Modal */}
+      {showRandomModal && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]"
+          onClick={(e) => e.target === e.currentTarget && setShowRandomModal(false)}
+        >
+          <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-[scaleIn_0.2s_ease-out]">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+              <h2 className="text-2xl font-bold text-gray-800">Random Picks</h2>
+              <button
+                onClick={() => setShowRandomModal(false)}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Close modal"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 transition-all duration-150 ${isShuffling ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+                {randomRecipes.map((meal, index) => (
+                  <div
+                    key={meal.id}
+                    className="animate-[fadeSlideIn_0.3s_ease-out_forwards]"
+                    style={{ animationDelay: `${150 + index * 100}ms`, opacity: 0 }}
+                  >
+                    <MealCard meal={meal} />
+                  </div>
+                ))}
+              </div>
+
+              {/* Shuffle button - only show if there are more recipes than currently displayed */}
+              {filteredMeals.length > randomRecipes.length && (
+                <div className="flex justify-center">
+                  <button
+                    onClick={pickRandomRecipes}
+                    disabled={isShuffling}
+                    className="flex items-center gap-2 px-6 py-3 bg-lavender-200 text-gray-700 font-semibold rounded-xl hover:bg-lavender-300 disabled:opacity-50 transition-colors"
+                  >
+                    <span aria-hidden="true" className={isShuffling ? 'animate-spin' : ''}>🎲</span>
+                    Shuffle
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
