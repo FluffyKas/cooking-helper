@@ -130,17 +130,10 @@ export default function ProfilePage() {
     });
   };
 
+  // Redirect to login if not authenticated
   if (!user) {
-    return (
-      <main className="min-h-screen p-8">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-gray-600">Please log in to view your profile.</p>
-          <Link href="/login" className="text-mint-500 hover:underline">
-            Go to login
-          </Link>
-        </div>
-      </main>
-    );
+    router.push("/login");
+    return null;
   }
 
   return (
