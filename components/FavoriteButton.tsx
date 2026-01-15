@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "./AuthProvider";
-import { supabase } from "@/lib/supabase";
+import { useFavorites } from "./FavoritesProvider";
 
 interface FavoriteButtonProps {
   mealId: string;
@@ -11,69 +11,23 @@ interface FavoriteButtonProps {
 
 export default function FavoriteButton({ mealId, size = "md" }: FavoriteButtonProps) {
   const { user } = useAuth();
-  const [isFavorited, setIsFavorited] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isFavorited, toggleFavorite, isLoading } = useFavorites();
+  const [isToggling, setIsToggling] = useState(false);
 
   const iconSize = size === "sm" ? "w-5 h-5" : "w-6 h-6";
   const buttonSize = size === "sm" ? "p-1.5" : "p-2";
 
-  useEffect(() => {
-    if (!user) {
-      setIsLoading(false);
-      return;
-    }
+  const favorited = isFavorited(mealId);
 
-    const userId = user.id;
-
-    async function checkFavorite() {
-      try {
-        const { data } = await supabase
-          .from('favorites')
-          .select('id')
-          .eq('user_id', userId)
-          .eq('meal_id', mealId)
-          .maybeSingle();
-
-        setIsFavorited(!!data);
-      } catch (error) {
-        // No favorite found is expected, not an error
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    checkFavorite();
-  }, [mealId, user]);
-
-  const toggleFavorite = async (e: React.MouseEvent) => {
+  const handleToggle = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!user || isLoading) return;
+    if (!user || isToggling) return;
 
-    setIsLoading(true);
-
-    try {
-      if (isFavorited) {
-        await supabase
-          .from('favorites')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('meal_id', mealId);
-
-        setIsFavorited(false);
-      } else {
-        await supabase
-          .from('favorites')
-          .insert({ user_id: user.id, meal_id: mealId });
-
-        setIsFavorited(true);
-      }
-    } catch (error) {
-      console.error("Error toggling favorite:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    setIsToggling(true);
+    await toggleFavorite(mealId);
+    setIsToggling(false);
   };
 
   if (!user) return null;
@@ -81,16 +35,16 @@ export default function FavoriteButton({ mealId, size = "md" }: FavoriteButtonPr
   return (
     <button
       type="button"
-      onClick={toggleFavorite}
-      disabled={isLoading}
+      onClick={handleToggle}
+      disabled={isLoading || isToggling}
       className={`${buttonSize} rounded-full transition-all ${
-        isFavorited
+        favorited
           ? "bg-coral-100 text-coral-300 hover:bg-coral-200"
           : "bg-white/80 text-gray-400 hover:text-coral-300 hover:bg-white"
-      } ${isLoading ? "opacity-50" : ""}`}
-      aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+      } ${isLoading || isToggling ? "opacity-50" : ""}`}
+      aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
     >
-      {isFavorited ? (
+      {favorited ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className={iconSize}

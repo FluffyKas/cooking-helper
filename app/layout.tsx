@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Lora, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
+import { FavoritesProvider } from "@/components/FavoritesProvider";
 import AppShell from "@/components/AppShell";
 
 const lora = Lora({
@@ -34,9 +35,11 @@ export default function RootLayout({
     <html lang="en" className={`${lora.variable} ${inter.variable}`}>
       <body className={inter.className}>
         <AuthProvider>
-          <AppShell>
-            {children}
-          </AppShell>
+          <FavoritesProvider>
+            <AppShell>
+              {children}
+            </AppShell>
+          </FavoritesProvider>
         </AuthProvider>
       </body>
     </html>
