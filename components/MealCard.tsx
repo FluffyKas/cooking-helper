@@ -53,7 +53,7 @@ export default function MealCard({ meal }: MealCardProps) {
           </div>
 
           {/* Content */}
-          <div className="p-4">
+          <div className="p-4 min-h-[156px]">
             <div className="flex items-start justify-between mb-2">
               <h3 className="font-semibold text-lg text-gray-800">{meal.name}</h3>
               {meal.spiciness && meal.spiciness > 0 && (
@@ -99,8 +99,7 @@ export default function MealCard({ meal }: MealCardProps) {
 
       {/* Action buttons */}
       <div className="absolute top-2 right-2 flex items-center gap-1.5">
-        <FavoriteButton mealId={meal.id} size="sm" />
-        <Link
+         <Link
           href={`/edit/${meal.id}`}
           onClick={(e) => e.stopPropagation()}
           className="p-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white"
@@ -115,6 +114,7 @@ export default function MealCard({ meal }: MealCardProps) {
             <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
           </svg>
         </Link>
+        <FavoriteButton mealId={meal.id} size="sm" />
       </div>
     </div>
   );
