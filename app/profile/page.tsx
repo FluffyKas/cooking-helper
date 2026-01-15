@@ -189,50 +189,37 @@ export default function ProfilePage() {
               <p className="text-sm text-gray-500 mb-1">Member since</p>
               <p className="font-medium text-gray-800">{formatDate(user.created_at)}</p>
             </div>
-          </div>
-        </div>
-
-        {/* Nickname */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
-          <h2 className="text-xl font-semibold mb-6 text-gray-800">Display Name</h2>
-          <form onSubmit={handleNicknameChange}>
-            <div className="max-w-sm">
-              <label className="block text-sm font-medium mb-2 text-gray-700">
-                Nickname
-              </label>
-              <input
-                type="text"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 focus:border-transparent bg-gray-50 text-gray-800"
-                placeholder="Enter your nickname"
-                maxLength={30}
-              />
-              <p className="mt-2 text-sm text-gray-500">
-                This name will be shown in the header.
-              </p>
+            <div className="sm:col-span-2">
+              <form onSubmit={handleNicknameChange} className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <label className="block text-sm text-gray-500 mb-1">
+                    Display Name
+                  </label>
+                  <input
+                    type="text"
+                    value={nickname}
+                    onChange={(e) => setNickname(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 focus:border-transparent bg-gray-50 text-gray-800"
+                    placeholder="Enter your nickname"
+                    maxLength={30}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={nicknameLoading || !nickname.trim()}
+                  className="self-end px-5 py-2 bg-mint-300 text-nav-dark font-semibold rounded-xl hover:bg-mint-400 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {nicknameLoading ? "Saving..." : "Save"}
+                </button>
+              </form>
+              {nicknameError && (
+                <p className="mt-2 text-sm text-coral-300">{nicknameError}</p>
+              )}
+              {nicknameSuccess && (
+                <p className="mt-2 text-sm text-mint-500">{nicknameSuccess}</p>
+              )}
             </div>
-
-            {nicknameError && (
-              <div className="mt-4 p-3 bg-coral-100 border border-coral-200 rounded-xl text-coral-300 text-sm max-w-sm">
-                {nicknameError}
-              </div>
-            )}
-
-            {nicknameSuccess && (
-              <div className="mt-4 p-3 bg-mint-100 border border-mint-200 rounded-xl text-mint-500 text-sm max-w-sm">
-                {nicknameSuccess}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={nicknameLoading || !nickname.trim()}
-              className="mt-6 px-6 py-3 bg-mint-300 text-nav-dark font-semibold rounded-xl hover:bg-mint-400 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
-              {nicknameLoading ? "Saving..." : "Save Nickname"}
-            </button>
-          </form>
+          </div>
         </div>
 
         {/* Change Password */}
