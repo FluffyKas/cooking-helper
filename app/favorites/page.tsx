@@ -7,6 +7,7 @@ import { useFavorites } from "@/components/FavoritesProvider";
 import { supabase } from "@/lib/supabase";
 import MealCard from "@/components/MealCard";
 import PageTransition from "@/components/PageTransition";
+import Spinner from "@/components/Spinner";
 import { Meal } from "@/types/meal";
 import Link from "next/link";
 
@@ -60,7 +61,9 @@ export default function FavoritesPage() {
       <main className="min-h-screen p-8">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl font-bold mb-8">Favorites</h1>
-          <p className="text-gray-500">Loading...</p>
+          <div className="flex justify-center py-12">
+            <Spinner />
+          </div>
         </div>
       </main>
     );

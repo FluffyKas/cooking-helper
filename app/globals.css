@@ -65,3 +65,31 @@ select option {
     transform: translateY(0);
   }
 }
+
+/* Flipping cube spinner */
+.spinner-cube {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 4px;
+  animation: flipX 1.5s ease-in-out infinite;
+}
+
+@keyframes flipX {
+  0% {
+    transform: perspective(200px) rotateX(0deg) rotateY(0deg);
+    background: #86efac; /* mint-300 */
+  }
+  33% {
+    transform: perspective(200px) rotateX(-180deg) rotateY(0deg);
+    background: #f5d0fe; /* lavender-200 */
+  }
+  66% {
+    transform: perspective(200px) rotateX(-180deg) rotateY(-180deg);
+    background: #fed7aa; /* coral-200 */
+  }
+  100% {
+    transform: perspective(200px) rotateX(-360deg) rotateY(-360deg);
+    background: #86efac; /* mint-300 */
+  }
+}

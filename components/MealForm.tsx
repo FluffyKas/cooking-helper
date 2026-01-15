@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Meal } from "@/types/meal";
 import { supabase } from "@/lib/supabase";
+import Spinner from "./Spinner";
 
 interface MealFormProps {
   mode: "add" | "edit";
@@ -254,8 +255,8 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
   // Loading state for edit mode
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto">
-        <p>Loading...</p>
+      <div className="max-w-4xl mx-auto flex justify-center py-12">
+        <Spinner />
       </div>
     );
   }
