@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ProfileDropdown from "./ProfileDropdown";
+import { useAuth } from "./AuthProvider";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -12,6 +13,8 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  const nickname = user?.user_metadata?.nickname;
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-sm shadow-sm hidden md:block z-50">
@@ -42,7 +45,14 @@ export default function Header() {
           </nav>
         </div>
 
-        <ProfileDropdown />
+        <div className="flex items-center gap-3">
+          {nickname && (
+            <span className="text-sm text-gray-600">
+              Hello, <span className="font-medium text-nav-dark">{nickname}</span>
+            </span>
+          )}
+          <ProfileDropdown />
+        </div>
       </div>
     </header>
   );

@@ -8,8 +8,14 @@ import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
 export default function ProfilePage() {
-  const { user, updatePassword, updateEmail, signOut } = useAuth();
+  const { user, updatePassword, updateEmail, updateProfile, signOut } = useAuth();
   const router = useRouter();
+
+  // Nickname state
+  const [nickname, setNickname] = useState(user?.user_metadata?.nickname || "");
+  const [nicknameError, setNicknameError] = useState("");
+  const [nicknameSuccess, setNicknameSuccess] = useState("");
+  const [nicknameLoading, setNicknameLoading] = useState(false);
 
   // Password change state
   const [newPassword, setNewPassword] = useState("");
@@ -28,6 +34,28 @@ export default function ProfilePage() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+
+  const handleNicknameChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setNicknameError("");
+    setNicknameSuccess("");
+
+    const trimmedNickname = nickname.trim();
+    if (!trimmedNickname) {
+      setNicknameError("Please enter a nickname");
+      return;
+    }
+
+    setNicknameLoading(true);
+    const { error } = await updateProfile({ nickname: trimmedNickname });
+
+    if (error) {
+      setNicknameError(error.message);
+    } else {
+      setNicknameSuccess("Nickname updated!");
+    }
+    setNicknameLoading(false);
+  };
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,6 +190,49 @@ export default function ProfilePage() {
               <p className="font-medium text-gray-800">{formatDate(user.created_at)}</p>
             </div>
           </div>
+        </div>
+
+        {/* Nickname */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
+          <h2 className="text-xl font-semibold mb-6 text-gray-800">Display Name</h2>
+          <form onSubmit={handleNicknameChange}>
+            <div className="max-w-sm">
+              <label className="block text-sm font-medium mb-2 text-gray-700">
+                Nickname
+              </label>
+              <input
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 focus:border-transparent bg-gray-50 text-gray-800"
+                placeholder="Enter your nickname"
+                maxLength={30}
+              />
+              <p className="mt-2 text-sm text-gray-500">
+                This name will be shown in the header.
+              </p>
+            </div>
+
+            {nicknameError && (
+              <div className="mt-4 p-3 bg-coral-100 border border-coral-200 rounded-xl text-coral-300 text-sm max-w-sm">
+                {nicknameError}
+              </div>
+            )}
+
+            {nicknameSuccess && (
+              <div className="mt-4 p-3 bg-mint-100 border border-mint-200 rounded-xl text-mint-500 text-sm max-w-sm">
+                {nicknameSuccess}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={nicknameLoading || !nickname.trim()}
+              className="mt-6 px-6 py-3 bg-mint-300 text-nav-dark font-semibold rounded-xl hover:bg-mint-400 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+            >
+              {nicknameLoading ? "Saving..." : "Save Nickname"}
+            </button>
+          </form>
         </div>
 
         {/* Change Password */}
