@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { getMealById } from "@/lib/meals";
 import DeleteMealButton from "@/components/DeleteMealButton";
 import FavoriteButton from "@/components/FavoriteButton";
+import SafeImage from "@/components/SafeImage";
 
 // Force dynamic rendering - no caching
 export const dynamic = 'force-dynamic';
@@ -122,8 +122,8 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
 
         {/* Image */}
         {mealData.image && (
-          <div className="relative h-96 mb-8 rounded-2xl overflow-hidden">
-            <Image
+          <div className="relative h-96 mb-8 rounded-2xl overflow-hidden bg-gray-100">
+            <SafeImage
               src={mealData.image}
               alt={mealData.name}
               fill

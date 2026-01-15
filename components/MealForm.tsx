@@ -32,6 +32,8 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(mode === "edit");
   const [error, setError] = useState("");
+  const [imageError, setImageError] = useState("");
+  const [imagePreviewLoaded, setImagePreviewLoaded] = useState(false);
 
   // Load available labels
   useEffect(() => {
@@ -126,9 +128,61 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
     setSelectedLabels((prev) => prev.filter((l) => l !== label));
   };
 
+  // Valid image extensions
+  const validImageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".bmp", ".ico"];
+
+  // Check if URL has a valid image extension
+  const isValidImageUrl = (url: string): boolean => {
+    if (!url) return true; // Empty is OK (optional field)
+    try {
+      const urlObj = new URL(url);
+      const pathname = urlObj.pathname.toLowerCase();
+      // Check extension or allow URLs without extension (could be dynamic images)
+      const hasValidExtension = validImageExtensions.some((ext) => pathname.endsWith(ext));
+      // Also allow URLs that might serve images without extensions (like from image hosting services)
+      const isLikelyImageService = /unsplash|imgur|cloudinary|pexels|pixabay/i.test(url);
+      return hasValidExtension || isLikelyImageService || !pathname.includes(".");
+    } catch {
+      return false; // Invalid URL format
+    }
+  };
+
+  // Handle image URL change with validation
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    setFormData((prev) => ({ ...prev, image: url }));
+    setImageError("");
+    setImagePreviewLoaded(false);
+
+    if (url && !isValidImageUrl(url)) {
+      setImageError("Please enter a valid image URL (jpg, png, gif, webp, etc.)");
+    }
+  };
+
+  // Handle image preview load success
+  const handleImageLoad = () => {
+    setImagePreviewLoaded(true);
+    setImageError("");
+  };
+
+  // Handle image preview load error
+  const handleImageError = () => {
+    if (formData.image) {
+      setImageError("Failed to load image. Please check the URL is correct and accessible.");
+      setImagePreviewLoaded(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Check for image errors before submitting
+    if (imageError) {
+      setError("Please fix the image URL error before submitting.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -340,10 +394,44 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
             type="url"
             name="image"
             value={formData.image}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
+            onChange={handleImageChange}
+            className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 bg-gray-50 text-gray-800 ${
+              imageError
+                ? "border-coral-300 focus:ring-coral-200"
+                : "border-gray-200 focus:ring-mint-300"
+            }`}
             placeholder="https://example.com/image.jpg"
           />
+          {/* Image validation error */}
+          {imageError && (
+            <p className="mt-2 text-sm text-coral-300">{imageError}</p>
+          )}
+          {/* Image preview */}
+          {formData.image && !imageError && (
+            <div className="mt-3">
+              <p className="text-sm text-gray-500 mb-2">Preview:</p>
+              <div className="relative w-full h-48 bg-gray-100 rounded-xl overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={formData.image}
+                  alt="Preview"
+                  onLoad={handleImageLoad}
+                  onError={handleImageError}
+                  className={`w-full h-full object-cover ${
+                    imagePreviewLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+                {!imagePreviewLoaded && !imageError && (
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                    Loading preview...
+                  </div>
+                )}
+              </div>
+              {imagePreviewLoaded && (
+                <p className="mt-2 text-sm text-mint-500">✓ Image loaded successfully</p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Labels - Optional */}

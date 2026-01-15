@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Meal } from "@/types/meal";
 import FavoriteButton from "./FavoriteButton";
+import SafeImage from "./SafeImage";
 
 interface MealCardProps {
   meal: Meal;
@@ -39,7 +39,7 @@ export default function MealCard({ meal }: MealCardProps) {
           {/* Image */}
           <div className="relative h-48 bg-gray-100">
             {meal.image ? (
-              <Image
+              <SafeImage
                 src={meal.image}
                 alt={meal.name}
                 fill
