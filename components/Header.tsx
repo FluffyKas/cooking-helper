@@ -16,7 +16,7 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-sm shadow-sm hidden md:block z-50">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo + Nav Links */}
+
         <div className="flex items-center gap-8">
           <Link href="/" className="font-lora text-xl font-bold text-nav-dark">
             Cooking Helper
@@ -42,7 +42,6 @@ export default function Header() {
           </nav>
         </div>
 
-        {/* Profile */}
         <ProfileDropdown />
       </div>
     </header>
