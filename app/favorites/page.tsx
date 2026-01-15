@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 import { supabase } from "@/lib/supabase";
 import MealCard from "@/components/MealCard";
@@ -9,6 +10,7 @@ import Link from "next/link";
 
 export default function FavoritesPage() {
   const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [favorites, setFavorites] = useState<Meal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -16,7 +18,7 @@ export default function FavoritesPage() {
     if (authLoading) return;
 
     if (!user) {
-      setIsLoading(false);
+      router.push("/login");
       return;
     }
 
@@ -57,22 +59,7 @@ export default function FavoritesPage() {
   }
 
   if (!user) {
-    return (
-      <main className="min-h-screen p-8">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">Favorites</h1>
-          <div className="bg-white rounded-2xl p-8 text-center">
-            <p className="text-gray-600 mb-4">Please sign in to view your favorites.</p>
-            <Link
-              href="/login"
-              className="inline-block px-6 py-3 bg-mint-300 text-nav-dark font-semibold rounded-xl hover:bg-mint-400 transition-colors"
-            >
-              Sign In
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
+    return null;
   }
 
   return (

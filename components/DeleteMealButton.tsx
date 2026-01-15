@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import ConfirmDialog from "./ConfirmDialog";
 
 interface DeleteMealButtonProps {
@@ -13,13 +14,26 @@ export default function DeleteMealButton({ mealId, mealName }: DeleteMealButtonP
   const router = useRouter();
   const [showConfirm, setShowConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleDelete = async () => {
     setIsDeleting(true);
+    setError("");
 
     try {
+      // Get auth token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        setError("You must be logged in to delete recipes.");
+        setIsDeleting(false);
+        return;
+      }
+
       const response = await fetch(`/api/meals/${mealId}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${session.access_token}`,
+        },
       });
 
       if (!response.ok) {
@@ -28,10 +42,10 @@ export default function DeleteMealButton({ mealId, mealName }: DeleteMealButtonP
 
       router.push("/");
       router.refresh();
-    } catch (error) {
-      console.error("Error deleting meal:", error);
+    } catch (err) {
+      console.error("Error deleting meal:", err);
+      setError("Failed to delete recipe. Please try again.");
       setIsDeleting(false);
-      setShowConfirm(false);
     }
   };
 
@@ -60,11 +74,11 @@ export default function DeleteMealButton({ mealId, mealName }: DeleteMealButtonP
       <ConfirmDialog
         isOpen={showConfirm}
         title="Delete Recipe"
-        message={`Are you sure you want to delete "${mealName}"? This action cannot be undone.`}
+        message={error || `Are you sure you want to delete "${mealName}"? This action cannot be undone.`}
         confirmLabel="Delete"
         cancelLabel="Cancel"
         onConfirm={handleDelete}
-        onCancel={() => setShowConfirm(false)}
+        onCancel={() => { setShowConfirm(false); setError(""); }}
         isLoading={isDeleting}
       />
     </>

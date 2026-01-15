@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Meal } from "@/types/meal";
+import { supabase } from "@/lib/supabase";
 
 interface MealFormProps {
   mode: "add" | "edit";
@@ -207,10 +208,19 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
       const url = mode === "add" ? "/api/meals" : `/api/meals/${mealId}`;
       const method = mode === "add" ? "POST" : "PUT";
 
+      // Get auth token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        setError("You must be logged in to save recipes.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`,
         },
         body: JSON.stringify(mealData),
       });
