@@ -54,7 +54,7 @@ export default function DeleteMealButton({ mealId, mealName }: DeleteMealButtonP
       <button
         type="button"
         onClick={() => setShowConfirm(true)}
-        className="flex items-center gap-2 px-4 py-2 bg-coral-100 text-coral-300 font-semibold rounded-2xl hover:bg-coral-200 transition-colors"
+        className="flex items-center gap-2 p-2 sm:px-4 sm:py-2 bg-coral-100 text-coral-300 font-semibold rounded-2xl hover:bg-coral-200 transition-colors"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +68,7 @@ export default function DeleteMealButton({ mealId, mealName }: DeleteMealButtonP
             clipRule="evenodd"
           />
         </svg>
-        DELETE
+        <span className="hidden sm:inline">DELETE</span>
       </button>
 
       <ConfirmDialog

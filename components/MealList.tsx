@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import MealCard from "./MealCard";
 import { Meal, Complexity } from "@/types/meal";
 
@@ -82,6 +82,18 @@ export default function MealList({ meals }: MealListProps) {
 
   const hasActiveFilters = searchQuery || selectedComplexity !== "all" ||
     selectedCuisine !== "all" || selectedLabels.length > 0;
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (showRandomModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showRandomModal]);
 
   // Count active filters for badge (including search)
   const activeFilterCount = useMemo(() => {
@@ -241,7 +253,7 @@ export default function MealList({ meals }: MealListProps) {
       {/* Random Recipes Modal */}
       {showRandomModal && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-[fadeIn_0.2s_ease-out]"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 pt-12 pb-24 md:py-4 animate-[fadeIn_0.2s_ease-out]"
           onClick={(e) => e.target === e.currentTarget && setShowRandomModal(false)}
         >
           <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-[scaleIn_0.2s_ease-out]">
