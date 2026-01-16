@@ -253,10 +253,10 @@ export default function MealList({ meals }: MealListProps) {
       {/* Random Recipes Modal */}
       {showRandomModal && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 pt-12 pb-24 md:py-4 animate-[fadeIn_0.2s_ease-out]"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start md:items-center justify-center px-4 pt-[env(safe-area-inset-top,2rem)] pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:py-4 overflow-y-auto animate-[fadeIn_0.2s_ease-out]"
           onClick={(e) => e.target === e.currentTarget && setShowRandomModal(false)}
         >
-          <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-[scaleIn_0.2s_ease-out]">
+          <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full my-4 animate-[scaleIn_0.2s_ease-out]">
             {/* Modal Header */}
             <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between rounded-t-2xl">
               <h2 className="text-2xl font-bold text-gray-800">Random Picks</h2>
