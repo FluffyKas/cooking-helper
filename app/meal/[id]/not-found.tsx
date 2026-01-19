@@ -7,7 +7,7 @@ export default function NotFound() {
         <h1 className="text-6xl font-bold mb-4">404</h1>
         <h2 className="text-2xl mb-4">Recipe Not Found</h2>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
-          Sorry, we couldn't find the recipe you're looking for.
+          Sorry, we couldn&apos;t find the recipe you&apos;re looking for.
         </p>
         <Link 
           href="/"
