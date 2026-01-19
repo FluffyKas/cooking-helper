@@ -1,28 +1,11 @@
 import { NextResponse } from "next/server";
-import { supabase, createAuthenticatedClient } from "@/lib/supabase";
+import { authenticateRequest } from "@/lib/auth";
 import { formatLabel } from "@/lib/labels";
 
 export async function POST(request: Request) {
   try {
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.split(" ")[1];
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: "Invalid token" },
-        { status: 401 }
-      );
-    }
-
-    const authClient = createAuthenticatedClient(token);
+    const auth = await authenticateRequest(request);
+    if (!auth.success) return auth.response;
 
     const newMeal = await request.json();
 
@@ -50,7 +33,7 @@ export async function POST(request: Request) {
       fat: newMeal.fat || null,
     };
 
-    const { data, error } = await authClient
+    const { data, error } = await auth.authClient
       .from('meals')
       .insert([mealForDb])
       .select()

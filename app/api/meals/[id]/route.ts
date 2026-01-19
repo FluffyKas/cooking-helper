@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { supabase, createAuthenticatedClient } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
+import { authenticateRequest } from "@/lib/auth";
 import { formatLabel } from "@/lib/labels";
 
 export async function GET(
@@ -34,25 +35,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.split(" ")[1];
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: "Invalid token" },
-        { status: 401 }
-      );
-    }
-
-    const authClient = createAuthenticatedClient(token);
+    const auth = await authenticateRequest(request);
+    if (!auth.success) return auth.response;
 
     const { id } = await params;
     const updatedData = await request.json();
@@ -82,7 +66,7 @@ export async function PUT(
       updated_at: new Date().toISOString(),
     };
 
-    const { data, error } = await authClient
+    const { data, error } = await auth.authClient
       .from('meals')
       .update(mealForDb)
       .eq('id', id)
@@ -109,29 +93,12 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const authHeader = request.headers.get("authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.split(" ")[1];
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: "Invalid token" },
-        { status: 401 }
-      );
-    }
-
-    const authClient = createAuthenticatedClient(token);
+    const auth = await authenticateRequest(request);
+    if (!auth.success) return auth.response;
 
     const { id } = await params;
 
-    const { error } = await authClient
+    const { error } = await auth.authClient
       .from('meals')
       .delete()
       .eq('id', id);
