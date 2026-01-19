@@ -59,6 +59,18 @@ export default function MealList({ meals }: MealListProps) {
     setSelectedLabels([]);
   };
 
+  // Pick k random items from array using index selection - O(k) instead of O(n log n)
+  const getRandomItems = useCallback(<T,>(array: T[], count: number): T[] => {
+    if (count >= array.length) return [...array];
+
+    const indices = new Set<number>();
+    while (indices.size < count) {
+      indices.add(Math.floor(Math.random() * array.length));
+    }
+
+    return Array.from(indices).map(i => array[i]);
+  }, []);
+
   // Pick up to 3 random recipes from filtered meals
   const pickRandomRecipes = useCallback(() => {
     if (filteredMeals.length === 0) return;
@@ -67,18 +79,14 @@ export default function MealList({ meals }: MealListProps) {
     if (showRandomModal) {
       setIsShuffling(true);
       setTimeout(() => {
-        const shuffled = [...filteredMeals].sort(() => Math.random() - 0.5);
-        const selected = shuffled.slice(0, Math.min(3, shuffled.length));
-        setRandomRecipes(selected);
+        setRandomRecipes(getRandomItems(filteredMeals, 3));
         setIsShuffling(false);
       }, 150);
     } else {
-      const shuffled = [...filteredMeals].sort(() => Math.random() - 0.5);
-      const selected = shuffled.slice(0, Math.min(3, shuffled.length));
-      setRandomRecipes(selected);
+      setRandomRecipes(getRandomItems(filteredMeals, 3));
       setShowRandomModal(true);
     }
-  }, [filteredMeals, showRandomModal]);
+  }, [filteredMeals, showRandomModal, getRandomItems]);
 
   const hasActiveFilters = searchQuery || selectedComplexity !== "all" ||
     selectedCuisine !== "all" || selectedLabels.length > 0;
