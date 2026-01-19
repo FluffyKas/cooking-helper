@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Link from "next/link";
 import { Meal } from "@/types/meal";
 import { getSpicyIcons } from "@/lib/utils";
@@ -20,7 +21,7 @@ const labelColors = [
   "bg-coral-200 text-gray-800",
 ];
 
-export default function MealCard({ meal }: MealCardProps) {
+function MealCard({ meal }: MealCardProps) {
 
   // Pick accent color based on meal id for consistency
   const accentIndex = meal.id.charCodeAt(0) % accentColors.length;
@@ -106,3 +107,5 @@ export default function MealCard({ meal }: MealCardProps) {
     </div>
   );
 }
+
+export default memo(MealCard);
