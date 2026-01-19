@@ -73,7 +73,7 @@ export async function PUT(
       image: updatedData.image || null,
       labels: updatedData.labels || null,
       prep_time: updatedData.prepTime || null,
-      servings: updatedData.servings || null,
+      servings: updatedData.servings,
       spiciness: updatedData.spiciness || null,
       calories: updatedData.calories || null,
       protein: updatedData.protein || null,

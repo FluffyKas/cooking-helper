@@ -9,8 +9,8 @@ export interface Meal {
   complexity: Complexity;
   cuisine: string;
   labels?: string[];
-  prep_time?: number; 
-  servings?: number;
+  prep_time?: number;
+  servings: number;
   spiciness?: number; 
   calories?: number;
   protein?: number;

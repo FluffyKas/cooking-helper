@@ -218,7 +218,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
 
         if (nutritionResponse.ok) {
           const totalNutrition = await nutritionResponse.json();
-          const servings = parseInt(formData.servings) || 1;
+          const servings = parseInt(formData.servings);
           calories = Math.round(totalNutrition.calories / servings);
           protein = Math.round(totalNutrition.protein / servings);
           carbs = Math.round(totalNutrition.carbs / servings);
@@ -241,7 +241,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         cuisine: formData.cuisine,
         labels: selectedLabels.length > 0 ? selectedLabels : undefined,
         prepTime: formData.prepTime ? parseInt(formData.prepTime) : undefined,
-        servings: formData.servings ? parseInt(formData.servings) : undefined,
+        servings: parseInt(formData.servings),
         spiciness: formData.spiciness !== "0" ? parseInt(formData.spiciness) : undefined,
         calories,
         protein,
@@ -560,12 +560,13 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
 
           <div>
             <label className="block text-sm font-medium mb-2">
-              Servings <span className="text-gray-400 text-xs">(optional)</span>
+              Servings <span className="text-coral-300">*</span>
             </label>
             <input
               type="number"
               name="servings"
               min="1"
+              required
               value={formData.servings}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"

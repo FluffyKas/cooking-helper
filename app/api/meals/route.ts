@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       image: newMeal.image || null,
       labels: newMeal.labels || null,
       prep_time: newMeal.prepTime || null,
-      servings: newMeal.servings || null,
+      servings: newMeal.servings,
       spiciness: newMeal.spiciness || null,
       calories: newMeal.calories || null,
       protein: newMeal.protein || null,
