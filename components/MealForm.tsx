@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Meal } from "@/types/meal";
 import { supabase } from "@/lib/supabase";
 import Spinner from "./Spinner";
+import ImageUrlField from "./ImageUrlField";
+import LabelsSelector from "./LabelsSelector";
 
 interface MealFormProps {
   mode: "add" | "edit";
@@ -23,19 +25,16 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
     image: "",
     complexity: "easy" as "easy" | "medium" | "hard",
     cuisine: "",
-    labels: "",
     prepTime: "",
     servings: "",
     spiciness: "0",
   });
 
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
-  const [customLabel, setCustomLabel] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(mode === "edit");
   const [error, setError] = useState("");
-  const [imageError, setImageError] = useState("");
-  const [imagePreviewLoaded, setImagePreviewLoaded] = useState(false);
+
   // Track original values for edit mode to detect changes
   const [originalIngredients, setOriginalIngredients] = useState("");
   const [originalServings, setOriginalServings] = useState("");
@@ -78,7 +77,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           image: data.image || "",
           complexity: data.complexity || "easy",
           cuisine: data.cuisine || "",
-          labels: "", 
           prepTime: data.prep_time?.toString() || "",
           servings: data.servings?.toString() || "",
           spiciness: data.spiciness?.toString() || "0",
@@ -106,9 +104,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
   }, [mode, mealId]);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -117,79 +113,17 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
     }));
   };
 
-  const toggleLabel = (label: string) => {
-    setSelectedLabels((prev) =>
-      prev.some((l) => l.toLowerCase() === label.toLowerCase())
-        ? prev.filter((l) => l.toLowerCase() !== label.toLowerCase())
-        : [...prev, label]
-    );
-  };
-
-  const addCustomLabel = () => {
-    const trimmed = customLabel.trim();
-    if (trimmed && !selectedLabels.some((l) => l.toLowerCase() === trimmed.toLowerCase())) {
-      const formatted =
-        trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
-      setSelectedLabels((prev) => [...prev, formatted]);
-      setCustomLabel("");
-
-      if (!availableLabels.some((l) => l.toLowerCase() === formatted.toLowerCase())) {
-        setAvailableLabels((prev) => [...prev, formatted].sort());
-      }
-    }
-  };
-
-  const removeLabel = (label: string) => {
-    setSelectedLabels((prev) => prev.filter((l) => l !== label));
-  };
-
-  const validImageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".bmp", ".ico"];
-
-  const isValidImageUrl = (url: string): boolean => {
-    if (!url) return true; 
-    try {
-      const urlObj = new URL(url);
-      const pathname = urlObj.pathname.toLowerCase();
-      const hasValidExtension = validImageExtensions.some((ext) => pathname.endsWith(ext));
-      const isLikelyImageService = /unsplash|imgur|cloudinary|pexels|pixabay/i.test(url);
-      return hasValidExtension || isLikelyImageService || !pathname.includes(".");
-    } catch {
-      return false; 
-    }
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const url = e.target.value;
+  const handleImageChange = (url: string) => {
     setFormData((prev) => ({ ...prev, image: url }));
-    setImageError("");
-    setImagePreviewLoaded(false);
-
-    if (url && !isValidImageUrl(url)) {
-      setImageError("Please enter a valid image URL (jpg, png, gif, webp, etc.)");
-    }
   };
 
-  const handleImageLoad = () => {
-    setImagePreviewLoaded(true);
-    setImageError("");
-  };
-
-  const handleImageError = () => {
-    if (formData.image) {
-      setImageError("Failed to load image. Please check the URL is correct and accessible.");
-      setImagePreviewLoaded(false);
-    }
+  const handleNewLabel = (label: string) => {
+    setAvailableLabels((prev) => [...prev, label].sort());
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
-    if (imageError) {
-      setError("Please fix the image URL error before submitting.");
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
@@ -325,10 +259,7 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <Link
-        href={backLink}
-        className="inline-block mb-6 text-mint-500 hover:underline"
-      >
+      <Link href={backLink} className="inline-block mb-6 text-mint-500 hover:underline">
         {backText}
       </Link>
 
@@ -428,119 +359,14 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Image URL <span className="text-gray-400 text-xs">(optional)</span>
-          </label>
-          <input
-            type="url"
-            name="image"
-            value={formData.image}
-            onChange={handleImageChange}
-            className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 bg-gray-50 text-gray-800 ${
-              imageError
-                ? "border-coral-300 focus:ring-coral-200"
-                : "border-gray-200 focus:ring-mint-300"
-            }`}
-            placeholder="https://example.com/image.jpg"
-          />
-          {imageError && (
-            <p className="mt-2 text-sm text-coral-300" role="alert" aria-live="polite">{imageError}</p>
-          )}
-          {formData.image && !imageError && (
-            <div className="mt-3">
-              <p className="text-sm text-gray-500 mb-2">Preview:</p>
-              <div className="relative w-full h-48 bg-gray-100 rounded-xl overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={formData.image}
-                  alt="Preview"
-                  onLoad={handleImageLoad}
-                  onError={handleImageError}
-                  className={`w-full h-full object-cover ${
-                    imagePreviewLoaded ? "opacity-100" : "opacity-0"
-                  }`}
-                />
-                {!imagePreviewLoaded && !imageError && (
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                    Loading preview...
-                  </div>
-                )}
-              </div>
-              {imagePreviewLoaded && (
-                <p className="mt-2 text-sm text-mint-500">✓ Image loaded successfully</p>
-              )}
-            </div>
-          )}
-        </div>
+        <ImageUrlField value={formData.image} onChange={handleImageChange} />
 
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Labels <span className="text-gray-400 text-xs">(optional)</span>
-          </label>
-
-          {availableLabels.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-3">
-              {availableLabels.map((label) => (
-                <button
-                  key={label}
-                  type="button"
-                  onClick={() => toggleLabel(label)}
-                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                    selectedLabels.some((l) => l.toLowerCase() === label.toLowerCase())
-                      ? "bg-mint-300 text-nav-dark"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {selectedLabels.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-3">
-              {selectedLabels.map((label) => (
-                <span
-                  key={label}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-mint-300 text-nav-dark rounded-full text-sm"
-                >
-                  {label}
-                  <button
-                    type="button"
-                    onClick={() => removeLabel(label)}
-                    className="hover:text-red-600"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
-
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={customLabel}
-              onChange={(e) => setCustomLabel(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addCustomLabel();
-                }
-              }}
-              className="flex-1 px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mint-300 bg-gray-50 text-gray-800"
-              placeholder="Add custom label and press Enter..."
-            />
-            <button
-              type="button"
-              onClick={addCustomLabel}
-              className="px-4 py-2 bg-mint-200 text-nav-dark font-semibold rounded-xl hover:bg-mint-300 transition-colors"
-            >
-              Add
-            </button>
-          </div>
-        </div>
+        <LabelsSelector
+          availableLabels={availableLabels}
+          selectedLabels={selectedLabels}
+          onLabelsChange={setSelectedLabels}
+          onNewLabelCreated={handleNewLabel}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -576,7 +402,11 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         </div>
 
         {error && (
-          <div className="p-4 bg-coral-100 border border-coral-200 rounded-xl text-coral-300" role="alert" aria-live="assertive">
+          <div
+            className="p-4 bg-coral-100 border border-coral-200 rounded-xl text-coral-300"
+            role="alert"
+            aria-live="assertive"
+          >
             {error}
           </div>
         )}
