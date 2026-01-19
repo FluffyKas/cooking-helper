@@ -1,14 +1,23 @@
 "use client";
 
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import MealCard from "./MealCard";
 import { Meal, Complexity } from "@/types/meal";
 
 interface MealListProps {
-  meals: Meal[];
+  initialMeals: Meal[];
+  initialTotal: number;
+  initialHasMore: boolean;
 }
 
-export default function MealList({ meals }: MealListProps) {
+export default function MealList({ initialMeals, initialTotal, initialHasMore }: MealListProps) {
+  // Infinite scroll state
+  const [meals, setMeals] = useState<Meal[]>(initialMeals);
+  const [total, setTotal] = useState(initialTotal);
+  const [hasMore, setHasMore] = useState(initialHasMore);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [offset, setOffset] = useState(initialMeals.length);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedComplexity, setSelectedComplexity] = useState<Complexity | "all">("all");
   const [selectedCuisine, setSelectedCuisine] = useState<string>("all");
@@ -112,6 +121,44 @@ export default function MealList({ meals }: MealListProps) {
     count += selectedLabels.length;
     return count;
   }, [searchQuery, selectedComplexity, selectedCuisine, selectedLabels]);
+
+  // Load more meals for infinite scroll
+  const loadMore = useCallback(async () => {
+    if (isLoadingMore || !hasMore) return;
+
+    setIsLoadingMore(true);
+    try {
+      const res = await fetch(`/api/meals?limit=20&offset=${offset}`);
+      const data = await res.json();
+
+      setMeals(prev => [...prev, ...data.meals]);
+      setHasMore(data.hasMore);
+      setOffset(prev => prev + data.meals.length);
+      setTotal(data.total);
+    } catch (error) {
+      console.error('Error loading more meals:', error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [offset, hasMore, isLoadingMore]);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+          loadMore();
+        }
+      },
+      { rootMargin: '100px' }
+    );
+
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [loadMore, hasMore, isLoadingMore]);
 
   return (
     <div>
@@ -240,17 +287,36 @@ export default function MealList({ meals }: MealListProps) {
 
         <p className="text-gray-500 text-sm" aria-live="polite" aria-atomic="true">
           {filteredMeals.length === meals.length
-            ? `${meals.length} recipes`
-            : `${filteredMeals.length} of ${meals.length}`}
+            ? `${meals.length}${hasMore ? '+' : ''} recipes`
+            : `${filteredMeals.length} of ${meals.length}${hasMore ? '+' : ''}`}
         </p>
       </div>
 
       {filteredMeals.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMeals.map((meal) => (
-            <MealCard key={meal.id} meal={meal} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredMeals.map((meal) => (
+              <MealCard key={meal.id} meal={meal} />
+            ))}
+          </div>
+
+          {/* Sentinel element for infinite scroll */}
+          <div ref={sentinelRef} className="h-4" />
+
+          {/* Loading indicator */}
+          {isLoadingMore && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-mint-400" />
+            </div>
+          )}
+
+          {/* End of list indicator */}
+          {!hasMore && meals.length > 20 && (
+            <p className="text-center text-gray-400 text-sm py-4">
+              You&apos;ve reached the end
+            </p>
+          )}
+        </>
       ) : (
         <div className="text-center py-12 bg-white rounded-2xl">
           <p className="text-lg mb-2 text-gray-600">No recipes found</p>

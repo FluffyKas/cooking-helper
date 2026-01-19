@@ -1,6 +1,25 @@
 import { NextResponse } from "next/server";
 import { authenticateRequest } from "@/lib/auth";
 import { formatLabel } from "@/lib/labels";
+import { getMealsPaginated } from "@/lib/meals";
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const limit = parseInt(searchParams.get("limit") || "20");
+    const offset = parseInt(searchParams.get("offset") || "0");
+
+    const result = await getMealsPaginated(limit, offset);
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("Error fetching meals:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch meals" },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(request: Request) {
   try {
