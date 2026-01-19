@@ -7,11 +7,9 @@ import FavoriteButton from "@/components/FavoriteButton";
 import SafeImage from "@/components/SafeImage";
 import PageTransition from "@/components/PageTransition";
 
-// Force dynamic rendering - no caching
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// Label pill colors
 const labelColors = [
   "bg-mint-200 text-gray-800",
   "bg-lavender-200 text-gray-800",
@@ -26,14 +24,12 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
     notFound();
   }
 
-  // Type assertion - after notFound check, meal is guaranteed to exist
   const mealData = meal;
 
   return (
     <PageTransition>
       <main className="min-h-screen p-8">
         <div className="max-w-4xl mx-auto">
-        {/* Back button */}
         <Link 
           href="/"
           className="inline-block mb-6 text-mint-500 font-medium hover:underline"
@@ -41,7 +37,6 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           ← Back to recipes
         </Link>
 
-        {/* Header with action buttons */}
         <div className="flex flex-col gap-4 mb-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-4">
             <h1 className="text-4xl font-bold">{mealData.name}</h1>
@@ -71,7 +66,6 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           </div>
         </div>
 
-        {/* Meta info */}
         <div className="flex flex-wrap gap-4 text-gray-600 mb-6">
           <div className="flex items-center gap-2">
             <span className="font-semibold">Complexity:</span>
@@ -103,7 +97,6 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           )}
         </div>
 
-        {/* Labels - colorful pills */}
         {mealData.labels && mealData.labels.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-6">
             {mealData.labels.map((label, index) => (
@@ -117,7 +110,38 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           </div>
         )}
 
-        {/* Image */}
+        {(mealData.calories || mealData.protein || mealData.carbs || mealData.fat) && (
+          <div className="mb-6 p-4 bg-lavender-100 rounded-xl">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Nutrition per serving</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {mealData.calories && (
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-800">{mealData.calories}</div>
+                  <div className="text-xs text-gray-500">Calories</div>
+                </div>
+              )}
+              {mealData.protein && (
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-800">{mealData.protein}g</div>
+                  <div className="text-xs text-gray-500">Protein</div>
+                </div>
+              )}
+              {mealData.carbs && (
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-800">{mealData.carbs}g</div>
+                  <div className="text-xs text-gray-500">Carbs</div>
+                </div>
+              )}
+              {mealData.fat && (
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-800">{mealData.fat}g</div>
+                  <div className="text-xs text-gray-500">Fat</div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {mealData.image && (
           <div className="relative h-96 mb-8 rounded-2xl overflow-hidden bg-gray-100">
             <SafeImage
@@ -130,7 +154,6 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           </div>
         )}
 
-        {/* Ingredients */}
         {mealData.ingredients && mealData.ingredients.length > 0 && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Ingredients</h2>
@@ -142,7 +165,6 @@ export default async function MealDetailPage({ params }: { params: Promise<{ id:
           </div>
         )}
 
-        {/* Instructions */}
         {mealData.instructions && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4">Instructions</h2>

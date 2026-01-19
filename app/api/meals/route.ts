@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabase, createAuthenticatedClient } from "@/lib/supabase";
 import { formatLabel } from "@/lib/labels";
 
 export async function POST(request: Request) {
   try {
-    // Verify authentication
     const authHeader = request.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json(
@@ -23,6 +22,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const authClient = createAuthenticatedClient(token);
+
     const newMeal = await request.json();
 
     // Format labels
@@ -32,7 +33,6 @@ export async function POST(request: Request) {
         .filter(Boolean);
     }
 
-    // Transform field names to match database
     const mealForDb = {
       name: newMeal.name,
       complexity: newMeal.complexity,
@@ -44,9 +44,13 @@ export async function POST(request: Request) {
       prep_time: newMeal.prepTime || null,
       servings: newMeal.servings || null,
       spiciness: newMeal.spiciness || null,
+      calories: newMeal.calories || null,
+      protein: newMeal.protein || null,
+      carbs: newMeal.carbs || null,
+      fat: newMeal.fat || null,
     };
 
-    const { data, error } = await supabase
+    const { data, error } = await authClient
       .from('meals')
       .insert([mealForDb])
       .select()

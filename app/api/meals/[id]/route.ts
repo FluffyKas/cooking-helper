@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabase, createAuthenticatedClient } from "@/lib/supabase";
 import { formatLabel } from "@/lib/labels";
 
-// GET single meal
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -30,13 +29,11 @@ export async function GET(
   }
 }
 
-// PUT (update) meal
 export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Verify authentication
     const authHeader = request.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json(
@@ -55,6 +52,8 @@ export async function PUT(
       );
     }
 
+    const authClient = createAuthenticatedClient(token);
+
     const { id } = await params;
     const updatedData = await request.json();
 
@@ -65,7 +64,6 @@ export async function PUT(
         .filter(Boolean);
     }
 
-    // Transform field names to match database
     const mealForDb = {
       name: updatedData.name,
       complexity: updatedData.complexity,
@@ -77,10 +75,14 @@ export async function PUT(
       prep_time: updatedData.prepTime || null,
       servings: updatedData.servings || null,
       spiciness: updatedData.spiciness || null,
+      calories: updatedData.calories || null,
+      protein: updatedData.protein || null,
+      carbs: updatedData.carbs || null,
+      fat: updatedData.fat || null,
       updated_at: new Date().toISOString(),
     };
 
-    const { data, error } = await supabase
+    const { data, error } = await authClient
       .from('meals')
       .update(mealForDb)
       .eq('id', id)
@@ -102,13 +104,11 @@ export async function PUT(
   }
 }
 
-// DELETE meal
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Verify authentication
     const authHeader = request.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json(
@@ -127,9 +127,11 @@ export async function DELETE(
       );
     }
 
+    const authClient = createAuthenticatedClient(token);
+
     const { id } = await params;
 
-    const { error } = await supabase
+    const { error } = await authClient
       .from('meals')
       .delete()
       .eq('id', id);

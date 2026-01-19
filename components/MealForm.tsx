@@ -36,8 +36,16 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
   const [error, setError] = useState("");
   const [imageError, setImageError] = useState("");
   const [imagePreviewLoaded, setImagePreviewLoaded] = useState(false);
+  // Track original values for edit mode to detect changes
+  const [originalIngredients, setOriginalIngredients] = useState("");
+  const [originalServings, setOriginalServings] = useState("");
+  const [originalMacros, setOriginalMacros] = useState<{
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
+  }>({});
 
-  // Load available labels
   useEffect(() => {
     async function loadLabels() {
       try {
@@ -52,7 +60,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
     loadLabels();
   }, []);
 
-  // Load meal data for edit mode
   useEffect(() => {
     if (mode !== "edit" || !mealId) return;
 
@@ -64,7 +71,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         }
         const data = await response.json();
 
-        // Populate form with existing data
         setFormData({
           name: data.name || "",
           ingredients: data.ingredients?.join("\n") || "",
@@ -72,13 +78,22 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           image: data.image || "",
           complexity: data.complexity || "easy",
           cuisine: data.cuisine || "",
-          labels: "", // Labels are handled separately
+          labels: "", 
           prepTime: data.prep_time?.toString() || "",
           servings: data.servings?.toString() || "",
           spiciness: data.spiciness?.toString() || "0",
         });
 
         setSelectedLabels(data.labels || []);
+        // Store original values to detect changes
+        setOriginalIngredients(data.ingredients?.join("\n") || "");
+        setOriginalServings(data.servings?.toString() || "");
+        setOriginalMacros({
+          calories: data.calories,
+          protein: data.protein,
+          carbs: data.carbs,
+          fat: data.fat,
+        });
         setIsLoading(false);
       } catch (err) {
         console.error("Error loading meal:", err);
@@ -113,13 +128,11 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
   const addCustomLabel = () => {
     const trimmed = customLabel.trim();
     if (trimmed && !selectedLabels.some((l) => l.toLowerCase() === trimmed.toLowerCase())) {
-      // Format the label: capitalize first letter, lowercase rest
       const formatted =
         trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
       setSelectedLabels((prev) => [...prev, formatted]);
       setCustomLabel("");
 
-      // Add to available labels if not already there
       if (!availableLabels.some((l) => l.toLowerCase() === formatted.toLowerCase())) {
         setAvailableLabels((prev) => [...prev, formatted].sort());
       }
@@ -130,26 +143,21 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
     setSelectedLabels((prev) => prev.filter((l) => l !== label));
   };
 
-  // Valid image extensions
   const validImageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".bmp", ".ico"];
 
-  // Check if URL has a valid image extension
   const isValidImageUrl = (url: string): boolean => {
-    if (!url) return true; // Empty is OK (optional field)
+    if (!url) return true; 
     try {
       const urlObj = new URL(url);
       const pathname = urlObj.pathname.toLowerCase();
-      // Check extension or allow URLs without extension (could be dynamic images)
       const hasValidExtension = validImageExtensions.some((ext) => pathname.endsWith(ext));
-      // Also allow URLs that might serve images without extensions (like from image hosting services)
       const isLikelyImageService = /unsplash|imgur|cloudinary|pexels|pixabay/i.test(url);
       return hasValidExtension || isLikelyImageService || !pathname.includes(".");
     } catch {
-      return false; // Invalid URL format
+      return false; 
     }
   };
 
-  // Handle image URL change with validation
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
     setFormData((prev) => ({ ...prev, image: url }));
@@ -161,13 +169,11 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
     }
   };
 
-  // Handle image preview load success
   const handleImageLoad = () => {
     setImagePreviewLoaded(true);
     setImageError("");
   };
 
-  // Handle image preview load error
   const handleImageError = () => {
     if (formData.image) {
       setImageError("Failed to load image. Please check the URL is correct and accessible.");
@@ -179,7 +185,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
     e.preventDefault();
     setError("");
 
-    // Check for image errors before submitting
     if (imageError) {
       setError("Please fix the image URL error before submitting.");
       return;
@@ -193,6 +198,40 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         .map((i) => i.trim())
         .filter(Boolean);
 
+      const ingredientsChanged = formData.ingredients !== originalIngredients;
+      const servingsChanged = formData.servings !== originalServings;
+      const shouldCalculateMacros =
+        ingredientsArray.length > 0 &&
+        (mode === "add" || ingredientsChanged || servingsChanged);
+
+      let calories: number | undefined;
+      let protein: number | undefined;
+      let carbs: number | undefined;
+      let fat: number | undefined;
+
+      if (shouldCalculateMacros) {
+        const nutritionResponse = await fetch("/api/nutrition", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ingredients: ingredientsArray }),
+        });
+
+        if (nutritionResponse.ok) {
+          const totalNutrition = await nutritionResponse.json();
+          const servings = parseInt(formData.servings) || 1;
+          calories = Math.round(totalNutrition.calories / servings);
+          protein = Math.round(totalNutrition.protein / servings);
+          carbs = Math.round(totalNutrition.carbs / servings);
+          fat = Math.round(totalNutrition.fat / servings);
+        }
+      } else if (mode === "edit") {
+        // Keep existing macros if no recalculation needed
+        calories = originalMacros.calories;
+        protein = originalMacros.protein;
+        carbs = originalMacros.carbs;
+        fat = originalMacros.fat;
+      }
+
       const mealData = {
         name: formData.name,
         ingredients: ingredientsArray.length > 0 ? ingredientsArray : undefined,
@@ -204,12 +243,15 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         prepTime: formData.prepTime ? parseInt(formData.prepTime) : undefined,
         servings: formData.servings ? parseInt(formData.servings) : undefined,
         spiciness: formData.spiciness !== "0" ? parseInt(formData.spiciness) : undefined,
+        calories,
+        protein,
+        carbs,
+        fat,
       };
 
       const url = mode === "add" ? "/api/meals" : `/api/meals/${mealId}`;
       const method = mode === "add" ? "POST" : "PUT";
 
-      // Get auth token
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
         setError("You must be logged in to save recipes.");
@@ -233,7 +275,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
       const result = await response.json();
       const redirectId = mode === "add" ? result.meal.id : mealId;
 
-      // Redirect to meal detail page
       router.push(`/meal/${redirectId}`);
       router.refresh();
     } catch (err) {
@@ -252,7 +293,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
     }
   };
 
-  // Loading state for edit mode
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto flex justify-center py-12">
@@ -261,7 +301,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
     );
   }
 
-  // Error state for edit mode
   if (error && mode === "edit" && !formData.name) {
     return (
       <div className="max-w-4xl mx-auto">
@@ -286,7 +325,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Back button */}
       <Link
         href={backLink}
         className="inline-block mb-6 text-mint-500 hover:underline"
@@ -297,7 +335,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
       <h1 className="text-4xl font-bold mb-8">{title}</h1>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Name - Required */}
         <div>
           <label className="block text-sm font-medium mb-2">
             Recipe Name <span className="text-coral-300">*</span>
@@ -313,7 +350,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           />
         </div>
 
-        {/* Complexity - Required */}
         <div>
           <label className="block text-sm font-medium mb-2">
             Complexity <span className="text-coral-300">*</span>
@@ -331,7 +367,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           </select>
         </div>
 
-        {/* Cuisine - Required */}
         <div>
           <label className="block text-sm font-medium mb-2">
             Cuisine <span className="text-coral-300">*</span>
@@ -347,7 +382,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           />
         </div>
 
-        {/* Spiciness - Optional */}
         <div>
           <label className="block text-sm font-medium mb-2">
             Spiciness Level <span className="text-gray-400 text-xs">(optional)</span>
@@ -365,7 +399,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           </select>
         </div>
 
-        {/* Ingredients - Optional */}
         <div>
           <label className="block text-sm font-medium mb-2">
             Ingredients <span className="text-gray-400 text-xs">(optional)</span>
@@ -381,7 +414,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           <p className="text-xs text-gray-500 mt-1">One ingredient per line</p>
         </div>
 
-        {/* Instructions - Optional */}
         <div>
           <label className="block text-sm font-medium mb-2">
             Instructions <span className="text-gray-400 text-xs">(optional)</span>
@@ -396,7 +428,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           />
         </div>
 
-        {/* Image URL - Optional */}
         <div>
           <label className="block text-sm font-medium mb-2">
             Image URL <span className="text-gray-400 text-xs">(optional)</span>
@@ -413,11 +444,9 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
             }`}
             placeholder="https://example.com/image.jpg"
           />
-          {/* Image validation error */}
           {imageError && (
             <p className="mt-2 text-sm text-coral-300" role="alert" aria-live="polite">{imageError}</p>
           )}
-          {/* Image preview */}
           {formData.image && !imageError && (
             <div className="mt-3">
               <p className="text-sm text-gray-500 mb-2">Preview:</p>
@@ -445,13 +474,11 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           )}
         </div>
 
-        {/* Labels - Optional */}
         <div>
           <label className="block text-sm font-medium mb-2">
             Labels <span className="text-gray-400 text-xs">(optional)</span>
           </label>
 
-          {/* Available labels as toggle buttons */}
           {availableLabels.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-3">
               {availableLabels.map((label) => (
@@ -471,7 +498,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
             </div>
           )}
 
-          {/* Selected labels display */}
           {selectedLabels.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-3">
               {selectedLabels.map((label) => (
@@ -492,7 +518,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
             </div>
           )}
 
-          {/* Custom label input */}
           <div className="flex gap-2">
             <input
               type="text"
@@ -517,7 +542,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           </div>
         </div>
 
-        {/* Prep Time and Servings - Optional */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-2">
@@ -550,14 +574,12 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
           </div>
         </div>
 
-        {/* Error message */}
         {error && (
           <div className="p-4 bg-coral-100 border border-coral-200 rounded-xl text-coral-300" role="alert" aria-live="assertive">
             {error}
           </div>
         )}
 
-        {/* Submit and Cancel buttons */}
         <div className="flex gap-4">
           <button
             type="submit"
