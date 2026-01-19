@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import MealCard from "./MealCard";
+import Spinner from "./Spinner";
 import { Meal, Complexity } from "@/types/meal";
 
 interface MealListProps {
@@ -11,7 +12,6 @@ interface MealListProps {
 }
 
 export default function MealList({ initialMeals, initialTotal, initialHasMore }: MealListProps) {
-  // Infinite scroll state
   const [meals, setMeals] = useState<Meal[]>(initialMeals);
   const [total, setTotal] = useState(initialTotal);
   const [hasMore, setHasMore] = useState(initialHasMore);
@@ -22,11 +22,7 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
   const [selectedComplexity, setSelectedComplexity] = useState<Complexity | "all">("all");
   const [selectedCuisine, setSelectedCuisine] = useState<string>("all");
   const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
-
-  // Collapse state for search & filter panel
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-  // Random recipes state
   const [showRandomModal, setShowRandomModal] = useState(false);
   const [randomRecipes, setRandomRecipes] = useState<Meal[]>([]);
   const [isShuffling, setIsShuffling] = useState(false);
@@ -68,7 +64,7 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
     setSelectedLabels([]);
   };
 
-  // Pick k random items from array using index selection - O(k) instead of O(n log n)
+  // O(k) random selection instead of O(n log n) shuffle
   const getRandomItems = useCallback(<T,>(array: T[], count: number): T[] => {
     if (count >= array.length) return [...array];
 
@@ -80,11 +76,9 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
     return Array.from(indices).map(i => array[i]);
   }, []);
 
-  // Pick up to 3 random recipes from filtered meals
   const pickRandomRecipes = useCallback(() => {
     if (filteredMeals.length === 0) return;
 
-    // Trigger shuffle animation if modal is already open
     if (showRandomModal) {
       setIsShuffling(true);
       setTimeout(() => {
@@ -100,7 +94,6 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
   const hasActiveFilters = searchQuery || selectedComplexity !== "all" ||
     selectedCuisine !== "all" || selectedLabels.length > 0;
 
-  // Lock body scroll when modal is open
   useEffect(() => {
     if (showRandomModal) {
       document.body.style.overflow = 'hidden';
@@ -112,7 +105,6 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
     };
   }, [showRandomModal]);
 
-  // Count active filters for badge (including search)
   const activeFilterCount = useMemo(() => {
     let count = 0;
     if (searchQuery) count++;
@@ -122,7 +114,6 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
     return count;
   }, [searchQuery, selectedComplexity, selectedCuisine, selectedLabels]);
 
-  // Load more meals for infinite scroll
   const loadMore = useCallback(async () => {
     if (isLoadingMore || !hasMore) return;
 
@@ -142,7 +133,6 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
     }
   }, [offset, hasMore, isLoadingMore]);
 
-  // Intersection Observer for infinite scroll
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
@@ -162,14 +152,12 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
 
   return (
     <div>
-      {/* Search & Filter panel - collapsible with animation */}
       <div
         className={`grid transition-all duration-300 ease-in-out ${
           isFilterOpen ? "grid-rows-[1fr] opacity-100 mb-6" : "grid-rows-[0fr] opacity-0"
         }`}
       >
         <div className="overflow-hidden">
-          {/* Search bar */}
           <div className="mb-4">
             <div className="relative">
               <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -185,7 +173,6 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
             </div>
           </div>
 
-          {/* Filter panel */}
           <div className="p-5 bg-white rounded-2xl shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-lg text-gray-800">Filters</h3>
@@ -252,7 +239,6 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
 
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          {/* Search & Filter toggle button */}
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
             className={`relative flex items-center gap-2 p-3 md:px-4 rounded-xl transition-colors ${
@@ -273,7 +259,6 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
             )}
           </button>
 
-          {/* Random Recipe button */}
           <button
             onClick={pickRandomRecipes}
             disabled={filteredMeals.length === 0}
@@ -300,17 +285,15 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
             ))}
           </div>
 
-          {/* Sentinel element for infinite scroll */}
+          {/* Invisible element that triggers loading more when scrolled into view */}
           <div ref={sentinelRef} className="h-4" />
 
-          {/* Loading indicator */}
           {isLoadingMore && (
             <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-mint-400" />
+              <Spinner size={32} />
             </div>
           )}
 
-          {/* End of list indicator */}
           {!hasMore && meals.length > 20 && (
             <p className="text-center text-gray-400 text-sm py-4">
               You&apos;ve reached the end
@@ -324,14 +307,12 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
         </div>
       )}
 
-      {/* Random Recipes Modal */}
       {showRandomModal && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start md:items-center justify-center px-4 pt-[env(safe-area-inset-top,2rem)] pb-[calc(5rem+env(safe-area-inset-bottom,0px))] md:py-4 overflow-y-auto animate-[fadeIn_0.2s_ease-out]"
           onClick={(e) => e.target === e.currentTarget && setShowRandomModal(false)}
         >
           <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full my-4 animate-[scaleIn_0.2s_ease-out]">
-            {/* Modal Header */}
             <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between rounded-t-2xl">
               <h2 className="text-2xl font-bold text-gray-800">Random Picks</h2>
               <button
@@ -345,7 +326,6 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
               </button>
             </div>
 
-            {/* Modal Content */}
             <div className="p-6">
               <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 transition-all duration-150 ${isShuffling ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
                 {randomRecipes.map((meal, index) => (
@@ -359,7 +339,6 @@ export default function MealList({ initialMeals, initialTotal, initialHasMore }:
                 ))}
               </div>
 
-              {/* Shuffle button - only show if there are more recipes than currently displayed */}
               {filteredMeals.length > randomRecipes.length && (
                 <div className="flex justify-center">
                   <button

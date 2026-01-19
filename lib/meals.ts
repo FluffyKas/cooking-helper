@@ -13,7 +13,6 @@ export async function getMealsPaginated(
   limit: number = DEFAULT_PAGE_SIZE,
   offset: number = 0
 ): Promise<PaginatedMeals> {
-  // Get total count
   const { count, error: countError } = await supabase
     .from('meals')
     .select('*', { count: 'exact', head: true });
@@ -25,7 +24,6 @@ export async function getMealsPaginated(
 
   const total = count || 0;
 
-  // Get paginated data
   const { data, error } = await supabase
     .from('meals')
     .select('*')

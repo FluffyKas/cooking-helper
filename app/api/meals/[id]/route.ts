@@ -41,7 +41,6 @@ export async function PUT(
     const { id } = await params;
     const updatedData = await request.json();
 
-    // Format labels
     if (updatedData.labels && Array.isArray(updatedData.labels)) {
       updatedData.labels = updatedData.labels
         .map((label: string) => formatLabel(label))

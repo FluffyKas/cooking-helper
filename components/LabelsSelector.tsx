@@ -35,7 +35,6 @@ export default function LabelsSelector({
       onLabelsChange([...selectedLabels, formatted]);
       setCustomLabel("");
 
-      // Notify parent if this is a new label not in availableLabels
       if (onNewLabelCreated && !availableLabels.some((l) => l.toLowerCase() === formatted.toLowerCase())) {
         onNewLabelCreated(formatted);
       }

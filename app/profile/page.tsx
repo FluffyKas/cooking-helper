@@ -12,26 +12,19 @@ export default function ProfilePage() {
   const { user, updatePassword, updateEmail, updateProfile, signOut } = useAuth();
   const router = useRouter();
 
-  // Nickname state
   const [nickname, setNickname] = useState(user?.user_metadata?.nickname || "");
   const [nicknameError, setNicknameError] = useState("");
   const [nicknameSuccess, setNicknameSuccess] = useState("");
   const [nicknameLoading, setNicknameLoading] = useState(false);
-
-  // Password change state
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [passwordLoading, setPasswordLoading] = useState(false);
-
-  // Email change state
   const [newEmail, setNewEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [emailSuccess, setEmailSuccess] = useState("");
   const [emailLoading, setEmailLoading] = useState(false);
-
-  // Delete account state
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState("");
@@ -118,7 +111,6 @@ export default function ProfilePage() {
     setDeleteLoading(true);
 
     try {
-      // Get current session token
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
@@ -139,7 +131,6 @@ export default function ProfilePage() {
         throw new Error(data.error || "Failed to delete account");
       }
 
-      // Sign out and redirect to login
       await signOut();
       router.push("/login");
     } catch (error) {
@@ -150,7 +141,6 @@ export default function ProfilePage() {
     }
   };
 
-  // Format date for display
   const formatDate = (dateString?: string) => {
     if (!dateString) return "Unknown";
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -160,7 +150,6 @@ export default function ProfilePage() {
     });
   };
 
-  // Redirect to login if not authenticated
   if (!user) {
     router.push("/login");
     return null;
@@ -170,7 +159,6 @@ export default function ProfilePage() {
     <PageTransition>
       <main className="min-h-screen p-8">
         <div className="max-w-2xl mx-auto">
-        {/* Back button */}
         <Link
           href="/"
           className="inline-block mb-6 text-mint-500 font-medium hover:underline"
@@ -180,7 +168,6 @@ export default function ProfilePage() {
 
         <h1 className="text-4xl font-bold mb-8">Profile</h1>
 
-        {/* Account Info */}
         <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
           <h2 className="text-xl font-semibold mb-6 text-gray-800">Account Information</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-lg">
@@ -225,7 +212,6 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Change Password */}
         <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
           <h2 className="text-xl font-semibold mb-6 text-gray-800">Change Password</h2>
           <form onSubmit={handlePasswordChange}>
@@ -280,7 +266,6 @@ export default function ProfilePage() {
           </form>
         </div>
 
-        {/* Change Email */}
         <div className="bg-white rounded-2xl p-6 shadow-sm mb-6">
           <h2 className="text-xl font-semibold mb-6 text-gray-800">Change Email</h2>
           <form onSubmit={handleEmailChange}>
@@ -322,7 +307,6 @@ export default function ProfilePage() {
           </form>
         </div>
 
-        {/* Delete Account */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-coral-200">
           <h2 className="text-xl font-semibold mb-2 text-coral-300">Danger Zone</h2>
           <p className="text-gray-600 mb-6 max-w-md">
@@ -343,7 +327,6 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        {/* Delete Confirmation Dialog */}
         <ConfirmDialog
           isOpen={showDeleteConfirm}
           title="Delete Account"

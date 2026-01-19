@@ -41,7 +41,6 @@ export default function SignupPage() {
     } else {
       setSuccess(true);
       setLoading(false);
-      // Auto-redirect after signup
       setTimeout(() => router.push("/"), 2000);
     }
   };

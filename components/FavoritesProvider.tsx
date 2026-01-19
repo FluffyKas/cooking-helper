@@ -18,7 +18,6 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch all favorites for the user on mount
   useEffect(() => {
     if (!user) {
       setFavorites(new Set());

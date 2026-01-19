@@ -21,7 +21,6 @@ export default function DeleteMealButton({ mealId, mealName }: DeleteMealButtonP
     setError("");
 
     try {
-      // Get auth token
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
         setError("You must be logged in to delete recipes.");

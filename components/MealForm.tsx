@@ -83,7 +83,6 @@ export default function MealForm({ mode, mealId, onCancel }: MealFormProps) {
         });
 
         setSelectedLabels(data.labels || []);
-        // Store original values to detect changes
         setOriginalIngredients(data.ingredients?.join("\n") || "");
         setOriginalServings(data.servings?.toString() || "");
         setOriginalMacros({

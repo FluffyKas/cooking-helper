@@ -12,13 +12,11 @@ export async function DELETE(request: Request) {
     const auth = await authenticateWithClient(request, supabaseAdmin);
     if (!auth.success) return auth.response;
 
-    // Delete user's favorites first (cleanup)
     await supabaseAdmin
       .from("favorites")
       .delete()
       .eq("user_id", auth.user.id);
 
-    // Delete the user account
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(auth.user.id);
 
     if (deleteError) {

@@ -28,7 +28,6 @@ export async function POST(request: Request) {
 
     const newMeal = await request.json();
 
-    // Format labels
     if (newMeal.labels && Array.isArray(newMeal.labels)) {
       newMeal.labels = newMeal.labels
         .map((label: string) => formatLabel(label))

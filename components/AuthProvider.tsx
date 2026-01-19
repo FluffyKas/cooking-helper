@@ -22,13 +22,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -77,7 +75,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: userData, error } = await supabase.auth.updateUser({
       data: data,
     });
-    // Update local user state with new metadata
     if (userData?.user) {
       setUser(userData.user);
     }
