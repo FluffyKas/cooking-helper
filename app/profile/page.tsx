@@ -142,8 +142,9 @@ export default function ProfilePage() {
       // Sign out and redirect to login
       await signOut();
       router.push("/login");
-    } catch (error: any) {
-      setDeleteError(error.message || "Failed to delete account");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to delete account";
+      setDeleteError(message);
       setDeleteLoading(false);
       setShowDeleteConfirm(false);
     }

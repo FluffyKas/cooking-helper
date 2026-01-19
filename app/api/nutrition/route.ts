@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 ${ingredients.map((ing) => `- ${ing}`).join("\n")}
 
 Respond with ONLY a JSON object in this exact format, no other text:
-{"calories": <number>, "protein": <number>, "carbs": <number>, "fat": <number|}
+{"calories": <number>, "protein": <number>, "carbs": <number>, "fat": <number>}
 
 Where:
 - calories: total calories for ALL ingredients combined (integer)
